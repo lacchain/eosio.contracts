@@ -273,20 +273,28 @@ namespace lacchainsystem {
           * Add new boot entity
           *
           * @param boot - boot name.
+          * @param owner - boot owner authority.
+          * @param active - boot active authority.
           * @param url - the url of the boot, normally the url of the boot website.
           */
          [[eosio::action]]
-         void addboot( const name& writer,
+         void addboot( const name& boot,
+                       const authority& owner,
+                       const authority& active,
                        const std::string& url );
 
          /**
           * Add new observer entity
           *
           * @param observer - observer name.
+          * @param owner - writer owner authority.
+          * @param active - writer active authority.
           * @param url - the url of the observer, normally the url of the observer website.
           */
          [[eosio::action]]
          void addobserver( const name& observer,
+                           const authority& owner,
+                           const authority& active,
                            const std::string& url );
 
          /**
@@ -398,18 +406,19 @@ namespace lacchainsystem {
          using activate_action = action_wrapper<"activate"_n, &lacchain::activate>;
          using reqactivated_action = action_wrapper<"reqactivated"_n, &lacchain::reqactivated>;
 
-      private:
-         template<typename T>
-         void add_entity(name entity_name, T&& row_creator) {
-            entity_table entities(get_self(), get_self().value);
-            auto itr = entities.find( entity_name.value );
-            eosio::check(itr == entities.end(), "An entity with that name already exists");
-            entities.emplace( get_self(), [&]( auto& e ) {
-               e.name = entity_name;
-               row_creator(e);
-            });
+         [[eosio::action]]
+         void dummy() {
+            eosio::print("I'm a dummy action!");
          }
 
-         bool validate_authority(const name& writer, const authority& auth);
+      private:
+
+         void add_new_entity(const name& entity_name,
+                             const entity_type entity_type,
+                             const authority& owner, const authority& active,
+                             const std::optional<eosio::block_signing_authority> bsa,
+                             const std::string& url);
+
+         bool validate_newuser_authority(const authority& auth);
    };
 }
