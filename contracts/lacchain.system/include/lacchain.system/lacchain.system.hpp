@@ -246,14 +246,14 @@ namespace lacchainsystem {
           * @param owner - the owner authority for the validator account
           * @param active - the active authority for the validator account
           * @param validator_authority - the weighted threshold multisig block signing authority of the block producer used to sign blocks.
-          * @param url - the url of the validator, normally the url of the validator website.
+          * @param location - the location country code as defined in the ISO 3166, https://en.wikipedia.org/wiki/List_of_ISO_3166_country_codes.
           */
          [[eosio::action]]
          void addvalidator( const name& validator,
                             const authority& owner,
                             const authority& active,
                             const eosio::block_signing_authority& validator_authority,
-                            const std::string& url );
+                            const uint16_t location );
 
          /**
           * Add new writer entity
@@ -261,13 +261,13 @@ namespace lacchainsystem {
           * @param writer - writer account name.
           * @param owner - writer owner authority.
           * @param active - writer active authority.
-          * @param url - the url of the writer, normally the url of the writer website.
+          * @param location - the location country code as defined in the ISO 3166, https://en.wikipedia.org/wiki/List_of_ISO_3166_country_codes.
           */
          [[eosio::action]]
          void addwriter( const name& writer,
                          const authority& owner,
                          const authority& active,
-                         const std::string& url );
+                         const uint16_t location );
 
          /**
           * Add new boot entity
@@ -275,13 +275,13 @@ namespace lacchainsystem {
           * @param boot - boot name.
           * @param owner - boot owner authority.
           * @param active - boot active authority.
-          * @param url - the url of the boot, normally the url of the boot website.
+          * @param location - the location country code as defined in the ISO 3166, https://en.wikipedia.org/wiki/List_of_ISO_3166_country_codes.
           */
          [[eosio::action]]
          void addboot( const name& boot,
                        const authority& owner,
                        const authority& active,
-                       const std::string& url );
+                       const uint16_t location );
 
          /**
           * Add new observer entity
@@ -289,13 +289,13 @@ namespace lacchainsystem {
           * @param observer - observer name.
           * @param owner - writer owner authority.
           * @param active - writer active authority.
-          * @param url - the url of the observer, normally the url of the observer website.
+          * @param location - the location country code as defined in the ISO 3166, https://en.wikipedia.org/wiki/List_of_ISO_3166_country_codes.
           */
          [[eosio::action]]
          void addobserver( const name& observer,
                            const authority& owner,
                            const authority& active,
-                           const std::string& url );
+                           const uint16_t location );
 
          /**
           * Add a new network link between two entities
@@ -343,13 +343,13 @@ namespace lacchainsystem {
          struct [[eosio::table]] entity {
             name                name;
             int                 type;
-            std::string         url;
+            uint16_t            location = 0;
             std::optional<bsa>  bsa;
             uint64_t            reserved = 0;
 
             uint64_t primary_key()const { return name.value; }
 
-            EOSLIB_SERIALIZE( entity, (name)(type)(url)(bsa)(reserved) )
+            EOSLIB_SERIALIZE( entity, (name)(type)(location)(bsa)(reserved) )
          };
 
          typedef eosio::multi_index< "entity"_n, entity > entity_table;
@@ -417,7 +417,7 @@ namespace lacchainsystem {
                              const entity_type entity_type,
                              const authority& owner, const authority& active,
                              const std::optional<eosio::block_signing_authority> bsa,
-                             const std::string& url);
+                             const uint16_t location);
 
          bool validate_newuser_authority(const authority& auth);
    };
