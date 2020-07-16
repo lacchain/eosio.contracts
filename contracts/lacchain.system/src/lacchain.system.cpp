@@ -113,7 +113,7 @@ void lacchain::add_new_entity(const name& entity_name,
                               const entity_type entity_type,
                               const authority& owner, const authority& active,
                               const std::optional<eosio::block_signing_authority> bsa,
-                              const std::string& url) {
+                              const uint16_t location) {
    require_auth( get_self() );
    
    entity_table entities(get_self(), get_self().value);
@@ -124,7 +124,7 @@ void lacchain::add_new_entity(const name& entity_name,
    entities.emplace( get_self(), [&]( auto& e ) {
       e.name = entity_name;
       e.type = entity_type;
-      e.url  = url;
+      e.location  = location;
       e.bsa  = bsa;
    });
 
@@ -135,24 +135,24 @@ void lacchain::addvalidator( const name& validator,
                              const authority& owner,
                              const authority& active,
                              const eosio::block_signing_authority& validator_authority,
-                             const std::string& url ) {
-   add_new_entity(validator, entity_type::VALIDATOR, owner, active, validator_authority, url);
+                             const uint16_t location ) {
+   add_new_entity(validator, entity_type::VALIDATOR, owner, active, validator_authority, location);
 }
 
 void lacchain::addwriter( const name& writer, const authority& owner,
-                          const authority& active, const std::string& url ) {
-   add_new_entity(writer, entity_type::WRITER, owner, active, {}, url);
+                          const authority& active, const uint16_t location ) {
+   add_new_entity(writer, entity_type::WRITER, owner, active, {}, location);
 }
 
 void lacchain::addboot( const name& boot, const authority& owner,
-                          const authority& active, const std::string& url ) {
-   add_new_entity(boot, entity_type::BOOT, owner, active, {}, url);
+                          const authority& active, const uint16_t location ) {
+   add_new_entity(boot, entity_type::BOOT, owner, active, {}, location);
 }
 
 void lacchain::addobserver( const name& observer, const authority& owner,
-                          const authority& active, const std::string& url ) {
+                          const authority& active, const uint16_t location ) {
    //TODO: think => should observers have accounts? 
-   add_new_entity(observer, entity_type::OBSERVER, owner, active, {}, url);
+   add_new_entity(observer, entity_type::OBSERVER, owner, active, {}, location);
 }
 
 void lacchain::addnetlink( const name& entityA, const name& entityB, int direction ) {
