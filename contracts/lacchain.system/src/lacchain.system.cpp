@@ -60,10 +60,10 @@ void lacchain::newaccount( name creator, name name, const authority& owner, cons
       eosio::check(creator == get_self(), "Only the permissioning committee can create an entity account");
       eosio::check(itr != entities.end(), "Entity not found");
 
-      if( itr->type == entity_type::VALIDATOR ) {
+      if( itr->type == node_type::VALIDATOR ) {
          //TODO: think how much
          set_resource_limits( name, 1*(1 << 20), 1 << 23, 1 << 23 );
-      } else if ( itr->type == entity_type::WRITER ) {
+      } else if ( itr->type == node_type::WRITER ) {
          
          //TODO: default values, now 200MB + ~1/total_writers of cpu/net resources
          set_resource_limits( name, 200*(1 << 20), 1 << 30, 1 << 30 );
@@ -75,7 +75,7 @@ void lacchain::newaccount( name creator, name name, const authority& owner, cons
          
          itr = entities.begin();
          while( itr != entities.end() ) {
-            if( itr->type == entity_type::WRITER ) {
+            if( itr->type == node_type::WRITER ) {
                auth.accounts.push_back({
                   {itr->name, "active"_n},
                   1    
@@ -86,19 +86,19 @@ void lacchain::newaccount( name creator, name name, const authority& owner, cons
          
          updateauth_action(get_self(), {"writer"_n, "active"_n}).send( "writer"_n, "access"_n, "owner"_n, auth);
 
-      } else if ( itr->type == entity_type::BOOT ) {
+      } else if ( itr->type == node_type::BOOT ) {
          //TODO: think how much
          set_resource_limits( name, 1*(1 << 20), 1 << 23, 1 << 23 );
-      } else if ( itr->type == entity_type::OBSERVER ) {
+      } else if ( itr->type == node_type::OBSERVER ) {
          //TODO: think how much
          set_resource_limits( name, 1*(1 << 20), 1 << 23, 1 << 23 );
       } else {
          check(false, "Unknown entity type");
       }
-      //eosio::check(itr->type == entity_type::VALIDATOR || itr->type == entity_type::WRITER, "Only validators and writers can have an accounts");
+      //eosio::check(itr->type == node_type::VALIDATOR || itr->type == node_type::WRITER, "Only validators and writers can have an accounts");
    } else {
       eosio::print(itr->type);
-      eosio::check(itr->type == entity_type::WRITER, "Only writers entities can create new accounts");
+      eosio::check(itr->type == node_type::WRITER, "Only writers entities can create new accounts");
       eosio::check(validate_newuser_authority(active), "invalid active authority");
       eosio::check(validate_newuser_authority(owner), "invalid owner authority");
 
@@ -110,7 +110,7 @@ void lacchain::newaccount( name creator, name name, const authority& owner, cons
 }
 
 void lacchain::add_new_entity(const name& entity_name,
-                              const entity_type entity_type,
+                              const node_type node_type,
                               const authority& owner, const authority& active,
                               const std::optional<eosio::block_signing_authority> bsa,
                               const uint16_t location) {
@@ -136,23 +136,23 @@ void lacchain::addvalidator( const name& validator,
                              const authority& active,
                              const eosio::block_signing_authority& validator_authority,
                              const uint16_t location ) {
-   add_new_entity(validator, entity_type::VALIDATOR, owner, active, validator_authority, location);
+   add_new_entity(validator, node_type::VALIDATOR, owner, active, validator_authority, location);
 }
 
 void lacchain::addwriter( const name& writer, const authority& owner,
                           const authority& active, const uint16_t location ) {
-   add_new_entity(writer, entity_type::WRITER, owner, active, {}, location);
+   add_new_entity(writer, node_type::WRITER, owner, active, {}, location);
 }
 
 void lacchain::addboot( const name& boot, const authority& owner,
                           const authority& active, const uint16_t location ) {
-   add_new_entity(boot, entity_type::BOOT, owner, active, {}, location);
+   add_new_entity(boot, node_type::BOOT, owner, active, {}, location);
 }
 
 void lacchain::addobserver( const name& observer, const authority& owner,
                           const authority& active, const uint16_t location ) {
    //TODO: think => should observers have accounts? 
-   add_new_entity(observer, entity_type::OBSERVER, owner, active, {}, location);
+   add_new_entity(observer, node_type::OBSERVER, owner, active, {}, location);
 }
 
 void lacchain::addnetlink( const name& entityA, const name& entityB, int direction ) {

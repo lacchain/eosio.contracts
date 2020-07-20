@@ -330,8 +330,12 @@ namespace lacchainsystem {
          [[eosio::action]]
          void setschedule( const std::vector<name>& validators );
 
-
          enum entity_type {
+            PARTNER = 1,
+            NON_PARTNER = 2
+         };
+
+         enum node_type {
             VALIDATOR = 1,
             WRITER    = 2,
             BOOT      = 3,
