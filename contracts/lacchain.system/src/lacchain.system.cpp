@@ -60,41 +60,41 @@ void lacchain::newaccount( name creator, name name, const authority& owner, cons
       eosio::check(creator == get_self(), "Only the permissioning committee can create an entity account");
       eosio::check(itr != entities.end(), "Entity not found");
 
-      if( itr->type == entity_type::VALIDATOR ) {
-         //TODO: think how much
-         set_resource_limits( name, 1*(1 << 20), 1 << 23, 1 << 23 );
-      } else if ( itr->type == entity_type::WRITER ) {
+      // if( itr->type == entity_type::VALIDATOR ) {
+      //    //TODO: think how much
+      //    set_resource_limits( name, 1*(1 << 20), 1 << 23, 1 << 23 );
+      // } else if ( itr->type == entity_type::WRITER ) {
          
-         //TODO: default values, now 200MB + ~1/total_writers of cpu/net resources
-         set_resource_limits( name, 200*(1 << 20), 1 << 30, 1 << 30 );
+      //    //TODO: default values, now 200MB + ~1/total_writers of cpu/net resources
+      //    set_resource_limits( name, 200*(1 << 20), 1 << 30, 1 << 30 );
          
-         //TODO: Use a new table with the writer@access permission configuration
+      //    //TODO: Use a new table with the writer@access permission configuration
          
-         authority auth;
-         auth.threshold = 1;
+      //    authority auth;
+      //    auth.threshold = 1;
          
-         itr = entities.begin();
-         while( itr != entities.end() ) {
-            if( itr->type == entity_type::WRITER ) {
-               auth.accounts.push_back({
-                  {itr->name, "active"_n},
-                  1    
-               });
-            }
-            ++itr;
-         }
+      //    itr = entities.begin();
+      //    while( itr != entities.end() ) {
+      //       if( itr->type == entity_type::WRITER ) {
+      //          auth.accounts.push_back({
+      //             {itr->name, "active"_n},
+      //             1    
+      //          });
+      //       }
+      //       ++itr;
+      //    }
          
-         updateauth_action(get_self(), {"writer"_n, "active"_n}).send( "writer"_n, "access"_n, "owner"_n, auth);
+      //    updateauth_action(get_self(), {"writer"_n, "active"_n}).send( "writer"_n, "access"_n, "owner"_n, auth);
 
-      } else if ( itr->type == entity_type::BOOT ) {
-         //TODO: think how much
-         set_resource_limits( name, 1*(1 << 20), 1 << 23, 1 << 23 );
-      } else if ( itr->type == entity_type::OBSERVER ) {
-         //TODO: think how much
-         set_resource_limits( name, 1*(1 << 20), 1 << 23, 1 << 23 );
-      } else {
-         check(false, "Unknown entity type");
-      }
+      // } else if ( itr->type == entity_type::BOOT ) {
+      //    //TODO: think how much
+      //    set_resource_limits( name, 1*(1 << 20), 1 << 23, 1 << 23 );
+      // } else if ( itr->type == entity_type::OBSERVER ) {
+      //    //TODO: think how much
+      //    set_resource_limits( name, 1*(1 << 20), 1 << 23, 1 << 23 );
+      // } else {
+      //    check(false, "Unknown entity type");
+      // }
       //eosio::check(itr->type == entity_type::VALIDATOR || itr->type == entity_type::WRITER, "Only validators and writers can have an accounts");
    } else {
       eosio::print(itr->type);
@@ -109,50 +109,98 @@ void lacchain::newaccount( name creator, name name, const authority& owner, cons
    }
 }
 
-void lacchain::add_new_entity(const name& entity_name,
-                              const entity_type entity_type,
-                              const authority& owner, const authority& active,
-                              const std::optional<eosio::block_signing_authority> bsa,
-                              const uint16_t location) {
-   require_auth( get_self() );
+void lacchain::addentity(const name& entity_name,
+                         const entity_type entity_type,
+                         const std::optional<eosio::public_key> pubkey) {
    
+   require_auth( get_self() );
+
+   // Add new entity to the entities table
    entity_table entities(get_self(), get_self().value);
    auto itr = entities.find( entity_name.value );
-   
-   eosio::check(itr == entities.end(), "An entity with the same name already exists");
-   
+   eosio::check( itr == entities.end(), "An entity with that name already exists" ) 
+
    entities.emplace( get_self(), [&]( auto& e ) {
       e.name = entity_name;
       e.type = entity_type;
-      e.location  = location;
-      e.bsa  = bsa;
    });
 
-   newaccount_action(get_self(), {get_self(), "active"_n}).send( get_self(), entity_name, owner, active );   
+   //TODO: think comitee permission here
+   auto active_authority = authority{
+      1, {}, 
+      {{"eosio"_n, "active"_n}, 1},{}
+   };
+
+   //TODO: think comitee permission here
+   auto owner_authority = authority{
+      1, {},
+      {{{"eosio"_n, "active"_n}, 1}},{}
+   };
+
+   // If specified, add provided key to the active authority 
+   if( pubkey ) {
+      active_authority.keys = {{pubkey, 1}};
+   }
+
+   // Create new entity account 
+   newaccount_action(get_self(), {get_self(), "active"_n}).send(
+      get_self(), 
+      entity_name, 
+      owner_authority,
+      active_authority
+   );
+
 }
 
-void lacchain::addvalidator( const name& validator,
-                             const authority& owner,
-                             const authority& active,
-                             const eosio::block_signing_authority& validator_authority,
-                             const uint16_t location ) {
-   add_new_entity(validator, entity_type::VALIDATOR, owner, active, validator_authority, location);
+
+
+void lacchain::add_new_node( const name& node_name,
+                             const node_type node_type,
+                             const name& entity,
+                             const std::optional<eosio::block_signing_authority> bsa ) {
+   
+   eosio::check( has_auth(get_self()) || has_auth())
+   //require_auth( get_self() );
+
+   node_table nodes(get_self(), get_self().value);
+   auto itr = nodes.find( entity_name.value );
+
+   eosio::check(itr == nodes.end(), "A node with the same name already exists");
+
+   nodes.emplace( get_self(), [&]( auto& e ) {
+      e.name     = node_name;
+      e.entity   = entity;
+      e.type     = node_type;
+      e.bsa      = bsa;
+      e.enabled  = true;
+      e.info     = "";
+      e.reserved = 0;
+   });
 }
 
-void lacchain::addwriter( const name& writer, const authority& owner,
-                          const authority& active, const uint16_t location ) {
-   add_new_entity(writer, entity_type::WRITER, owner, active, {}, location);
+void lacchain::addvalidator( const name& name,
+                             const name& entity,
+                             const eosio::block_signing_authority& validator_authority) {
+   add_new_node(name, node_type::VALIDATOR, entity, validator_authority);
 }
 
-void lacchain::addboot( const name& boot, const authority& owner,
-                          const authority& active, const uint16_t location ) {
-   add_new_entity(boot, entity_type::BOOT, owner, active, {}, location);
+void lacchain::addwriter( const name& name,
+                          const name& entity,
+                          const authority& writer_authority) {
+   add_new_entity(name, node_type::WRITER, entity, {});
+   
+   
+   //TODO: create new permission on entity account
 }
 
-void lacchain::addobserver( const name& observer, const authority& owner,
-                          const authority& active, const uint16_t location ) {
-   //TODO: think => should observers have accounts? 
-   add_new_entity(observer, entity_type::OBSERVER, owner, active, {}, location);
+void lacchain::addboot( const name& name,
+                        const name& entity ) {
+   add_new_entity(name, entity_type::BOOT, entity, {});
+}
+
+void lacchain::addobserver( const name& name,
+                            const name& entity ) {
+   add_new_entity(name, entity_type::OBSERVER, entity, {});
 }
 
 void lacchain::addnetlink( const name& entityA, const name& entityB, int direction ) {
@@ -163,18 +211,18 @@ void lacchain::addnetlink( const name& entityA, const name& entityB, int directi
    auto itr = index.find( netlink::make_key(entityA.value, entityB.value) );
 
    auto update_link_record = [&]( auto& l ) {
-      l.entityA   = entityA;
-      l.entityB   = entityB;
+      l.nodeA     = nodeA;
+      l.nodeB     = nodeB;
       l.direction = direction;
    };
 
    if( itr == index.end() ) {
-      entity_table entities(get_self(), get_self().value);
+      node_table nodes(get_self(), get_self().value);
 
-      auto itr = entities.find( entityA.value );
-      eosio::check(itr != entities.end(), "entity A not found");
-      itr = entities.find( entityB.value );
-      eosio::check(itr != entities.end(), "entity B not found");
+      auto itr = nodes.find( nodeA.value );
+      eosio::check(itr != nodes.end(), "node A not found");
+      itr = nodes.find( nodeB.value );
+      eosio::check(itr != nodes.end(), "node B not found");
 
       netlinks.emplace( get_self(), update_link_record);
    } else {
@@ -182,12 +230,12 @@ void lacchain::addnetlink( const name& entityA, const name& entityB, int directi
    }
 }
 
-void lacchain::rmnetlink( const name& entityA, const name& entityB ) {
+void lacchain::rmnetlink( const name& nodeA, const name& nodeA ) {
    require_auth( get_self() );
 
    netlink_table netlinks( get_self(), get_self().value );
    auto index = netlinks.get_index<"pair"_n>();
-   auto itr = index.find( netlink::make_key(entityA.value, entityB.value) );
+   auto itr = index.find( netlink::make_key(nodeA.value, nodeB.value) );
    eosio::check(itr != index.end(), "netlink not found");
    index.erase( itr );
 }
@@ -208,7 +256,7 @@ void lacchain::setschedule( const std::vector<name>& validators ) {
    entity_table entities(get_self(), get_self().value);
    for(const auto& v : validators) {
       auto itr = entities.find( v.value );
-      eosio::check(itr != entities.end(), "Validator not found");
+      eosio::check(itr != entities.end() && itr->type == entity_type::VALIDATOR, "Validator not found");
       eosio::check(!!itr->bsa, "Invalid block signing authority");
       schedule.push_back(eosio::producer_key{
          itr->name, std::get<eosio::block_signing_authority_v0>(*itr->bsa).keys[0].key

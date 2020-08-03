@@ -239,85 +239,120 @@ namespace lacchainsystem {
          [[eosio::action]]
          void reqactivated( const eosio::checksum256& feature_digest );
 
+
          /**
-          * Add new validator entity
+          * Add new lacchain entity
           *
-          * @param validator - validator account name.
-          * @param owner - the owner authority for the validator account
-          * @param active - the active authority for the validator account
+          * @param entity_name - entity name.
+          * @param entity_type - entity type (PARTNER, NON_PARTNER)
+          * @param pubkey - public key to be added as authority for the entity account active permission (optional).
+          */
+         [[eosio::action]]
+         void addentity(const name& entity_name,
+                        const entity_type entity_type,
+                        const std::optional<eosio::public_key> pubkey) {
+
+         /**
+          * Add new validator node
+          *
+          * @param name - validator node name.
+          * @param entity - the parent entity of the node
           * @param validator_authority - the weighted threshold multisig block signing authority of the block producer used to sign blocks.
-          * @param location - the location country code as defined in the ISO 3166, https://en.wikipedia.org/wiki/List_of_ISO_3166_country_codes.
           */
          [[eosio::action]]
-         void addvalidator( const name& validator,
-                            const authority& owner,
-                            const authority& active,
-                            const eosio::block_signing_authority& validator_authority,
-                            const uint16_t location );
+         void addvalidator(
+            const name& name,
+            const name& entity,
+            const eosio::block_signing_authority& validator_authority
+         );
 
          /**
-          * Add new writer entity
+          * Add new writer node
           *
-          * @param writer - writer account name.
-          * @param owner - writer owner authority.
-          * @param active - writer active authority.
-          * @param location - the location country code as defined in the ISO 3166, https://en.wikipedia.org/wiki/List_of_ISO_3166_country_codes.
+          * @param name - writer node name.
+          * @param entity - the parent entity of the node
+          * @param writer_authority - new entity authority for this writer node
           */
          [[eosio::action]]
-         void addwriter( const name& writer,
-                         const authority& owner,
-                         const authority& active,
-                         const uint16_t location );
+         void addwriter(
+            const name& name,
+            const name& entity,
+            const authority& writer_authority
+         );
 
          /**
-          * Add new boot entity
+          * Add new boot node
           *
-          * @param boot - boot name.
-          * @param owner - boot owner authority.
-          * @param active - boot active authority.
-          * @param location - the location country code as defined in the ISO 3166, https://en.wikipedia.org/wiki/List_of_ISO_3166_country_codes.
+          * @param name - boot node name.
+          * @param entity - the parent entity of the node
           */
          [[eosio::action]]
-         void addboot( const name& boot,
-                       const authority& owner,
-                       const authority& active,
-                       const uint16_t location );
+         void addboot(
+            const name& name,
+            const name& entity
+         );
 
          /**
-          * Add new observer entity
+          * Add new observer node
           *
-          * @param observer - observer name.
-          * @param owner - writer owner authority.
-          * @param active - writer active authority.
-          * @param location - the location country code as defined in the ISO 3166, https://en.wikipedia.org/wiki/List_of_ISO_3166_country_codes.
+          * @param name - observer node name.
+          * @param entity - the parent entity of the node
           */
          [[eosio::action]]
-         void addobserver( const name& observer,
-                           const authority& owner,
-                           const authority& active,
-                           const uint16_t location );
+         void addobserver(
+            const name& observer,
+            const authority& owner
+         );
 
          /**
-          * Add a new network link between two entities
+          * Add a new network link between two nodes
           *
-          * @param entityA - entity A.
-          * @param entityB - entity B.
+          * @param nodeA - node A.
+          * @param nodeB - node B.
           * @param direction - link direction
           */
          [[eosio::action]]
-         void addnetlink( const name& entityA,
-                          const name& entityB,
-                          int direction );
+         void addnetlink(
+            const name& nodeA,
+            const name& nodeB,
+            int direction
+         );
 
          /**
-          * Remove a new network link between two entities
+          * Remove a new network link between two nodes
           *
-          * @param entityA - entity A.
-          * @param entityB - entity B.
+          * @param nodeA - node A.
+          * @param nodeB - node B.
           */
          [[eosio::action]]
-         void rmnetlink( const name& entityA,
-                          const name& entityB );
+         void rmnetlink(
+            const name& nodeA,
+            const name& nodeB
+         );
+
+         /**
+          * Set node information
+          *
+          * @param node - node name
+          * @param info - node information
+          */
+         [[eosio::action]]
+         void setnodeinfo(
+            const name& node,
+            const std::string& info
+         );
+
+         /**
+          * Set entity information
+          *
+          * @param entity - entity name
+          * @param info - entity information
+          */
+         [[eosio::action]]
+         void setentinfo(
+            const name& entity,
+            const std::string& info
+         );
 
          /**
           * Set schedule action, sets a new list of active validators, by proposing a schedule change, once the block that
@@ -330,8 +365,24 @@ namespace lacchainsystem {
          [[eosio::action]]
          void setschedule( const std::vector<name>& validators );
 
-
          enum entity_type {
+            PARTNER     = 1,
+            NON_PARTNER = 2,
+         };
+
+         struct [[eosio::table]] entity {
+            name        name;
+            entity_type type;
+            std::string info;
+            //TODO: agregar info solo para ser modificada x la entidad
+
+            uint64_t primary_key()const { return name.value; }
+            EOSLIB_SERIALIZE( entity, (name)(type)(info))
+         };
+
+         typedef eosio::multi_index< "entity"_n, entity > entity_table;
+
+         enum node_type {
             VALIDATOR = 1,
             WRITER    = 2,
             BOOT      = 3,
@@ -340,19 +391,21 @@ namespace lacchainsystem {
 
          using bsa = eosio::block_signing_authority;
          
-         struct [[eosio::table]] entity {
+         struct [[eosio::table]] node {
             name                name;
+            name                entity;
             int                 type;
-            uint16_t            location = 0;
             std::optional<bsa>  bsa;
+            bool                enabled;
+            std::string         info;
             uint64_t            reserved = 0;
 
-            uint64_t primary_key()const { return name.value; }
+            uint64_t primary_key()const { return id; }
 
-            EOSLIB_SERIALIZE( entity, (name)(type)(location)(bsa)(reserved) )
+            EOSLIB_SERIALIZE( node, (name)(entity)(type)(bsa)(enabled)(info)(reserved) )
          };
 
-         typedef eosio::multi_index< "entity"_n, entity > entity_table;
+         typedef eosio::multi_index< "node"_n, node > node_table;
 
          enum link_direction {
             AB   = 1,
@@ -362,19 +415,19 @@ namespace lacchainsystem {
 
          struct [[eosio::table]] netlink {
             uint64_t            id;
-            name                entityA;
-            name                entityB;
+            name                nodeA;
+            name                nodeB;
             int                 direction;
 
             uint64_t primary_key()const { return id; }
-            uint128_t secondary_key()const {  return make_key(entityA.value, entityB.value); }
+            uint128_t secondary_key()const {  return make_key(nodeA.value, nodeB.value); }
 
             static uint128_t make_key(uint64_t a, uint64_t b) {
                if( b > a ) std::swap(a,b);
                return uint128_t(a) << 64 | uint128_t(b);
             }
 
-            EOSLIB_SERIALIZE( netlink, (id)(entityA)(entityB)(direction) )
+            EOSLIB_SERIALIZE( netlink, (id)(nodeA)(nodeB)(direction) )
          };
 
          typedef eosio::multi_index< "netlink"_n, netlink,
@@ -413,11 +466,11 @@ namespace lacchainsystem {
 
       private:
 
-         void add_new_entity(const name& entity_name,
-                             const entity_type entity_type,
-                             const authority& owner, const authority& active,
-                             const std::optional<eosio::block_signing_authority> bsa,
-                             const uint16_t location);
+         void add_new_node(const name& node_name,
+                           const node_type node_type,
+                           const name& owner_entity,
+                           const authority& owner, const authority& active,
+                           const std::optional<eosio::block_signing_authority> bsa);
 
          bool validate_newuser_authority(const authority& auth);
    };
