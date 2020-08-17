@@ -3,6 +3,13 @@
 //#include <eosiolib/core/datastream.hpp>
 namespace lacchainsystem {
 
+   const constexpr int64_t new_entity_ram = 1024*10;
+   const constexpr int64_t new_entity_cpu = 1024;
+   const constexpr int64_t new_entity_net = 1024;
+
+   const constexpr int64_t entity_with_writer_cpu = 1024*100;
+   const constexpr int64_t entity_with_writer_net = 1024*100;
+
 void lacchain::setabi( name account, const std::vector<char>& abi ) {
    abi_hash_table table(get_self(), get_self().value);
    auto itr = table.find( account.value );
@@ -56,49 +63,18 @@ void lacchain::newaccount( name creator, name name, const authority& owner, cons
    auto itr = entities.find( creator.value );
 
    if( itr == entities.end() ) {
-      itr = entities.find( name.value );
       eosio::check(creator == get_self(), "Only the permissioning committee can create an entity account");
-      eosio::check(itr != entities.end(), "Entity not found");
 
-      // if( itr->type == entity_type::VALIDATOR ) {
-      //    //TODO: think how much
-      //    set_resource_limits( name, 1*(1 << 20), 1 << 23, 1 << 23 );
-      // } else if ( itr->type == entity_type::WRITER ) {
-         
-      //    //TODO: default values, now 200MB + ~1/total_writers of cpu/net resources
-      //    set_resource_limits( name, 200*(1 << 20), 1 << 30, 1 << 30 );
-         
-      //    //TODO: Use a new table with the writer@access permission configuration
-         
-      //    authority auth;
-      //    auth.threshold = 1;
-         
-      //    itr = entities.begin();
-      //    while( itr != entities.end() ) {
-      //       if( itr->type == entity_type::WRITER ) {
-      //          auth.accounts.push_back({
-      //             {itr->name, "active"_n},
-      //             1    
-      //          });
-      //       }
-      //       ++itr;
-      //    }
-         
-      //    updateauth_action(get_self(), {"writer"_n, "active"_n}).send( "writer"_n, "access"_n, "owner"_n, auth);
+      entity_table entities(get_self(), get_self().value);
+      auto itr = entities.find( name.value );
+      eosio::check( itr != entities.end(), "Entity does not exists" );
 
-      // } else if ( itr->type == entity_type::BOOT ) {
-      //    //TODO: think how much
-      //    set_resource_limits( name, 1*(1 << 20), 1 << 23, 1 << 23 );
-      // } else if ( itr->type == entity_type::OBSERVER ) {
-      //    //TODO: think how much
-      //    set_resource_limits( name, 1*(1 << 20), 1 << 23, 1 << 23 );
-      // } else {
-      //    check(false, "Unknown entity type");
-      // }
-      //eosio::check(itr->type == entity_type::VALIDATOR || itr->type == entity_type::WRITER, "Only validators and writers can have an accounts");
+      //set resources to newly created entity account
+      set_resource_limits( name, new_entity_ram, new_entity_cpu, new_entity_net);
    } else {
-      eosio::print(itr->type);
-      eosio::check(itr->type == entity_type::WRITER, "Only writers entities can create new accounts");
+      //OPTIONAL?: read the full tx and verify that this action has been authorized 
+      //           by one of the "writers" authorities
+
       eosio::check(validate_newuser_authority(active), "invalid active authority");
       eosio::check(validate_newuser_authority(owner), "invalid owner authority");
 
@@ -110,36 +86,35 @@ void lacchain::newaccount( name creator, name name, const authority& owner, cons
 }
 
 void lacchain::addentity(const name& entity_name,
-                         const entity_type entity_type,
+                         const uint64_t entity_type,
                          const std::optional<eosio::public_key> pubkey) {
-   
+
    require_auth( get_self() );
 
    // Add new entity to the entities table
    entity_table entities(get_self(), get_self().value);
    auto itr = entities.find( entity_name.value );
-   eosio::check( itr == entities.end(), "An entity with that name already exists" ) 
+   eosio::check( itr == entities.end(), "An entity with that name already exists" );
 
    entities.emplace( get_self(), [&]( auto& e ) {
       e.name = entity_name;
       e.type = entity_type;
    });
 
-   //TODO: think comitee permission here
    auto active_authority = authority{
       1, {}, 
-      {{"eosio"_n, "active"_n}, 1},{}
+      {{{"eosio"_n, "active"_n}, 1}},{}
    };
 
-   //TODO: think comitee permission here
    auto owner_authority = authority{
       1, {},
       {{{"eosio"_n, "active"_n}, 1}},{}
    };
 
-   // If specified, add provided key to the active authority 
+   // If specified, add provided key to the active and owner authority 
    if( pubkey ) {
-      active_authority.keys = {{pubkey, 1}};
+      active_authority.keys = {{*pubkey, 1}};
+      owner_authority.keys = {{*pubkey, 1}};
    }
 
    // Create new entity account 
@@ -158,86 +133,120 @@ void lacchain::add_new_node( const name& node_name,
                              const node_type node_type,
                              const name& entity,
                              const std::optional<eosio::block_signing_authority> bsa ) {
+
+   entity_table entities(get_self(), get_self().value);
+   auto itr = entities.find( entity.value );
+   eosio::check( itr != entities.end(), "Entity not found" ); 
    
-   eosio::check( has_auth(get_self()) || has_auth())
-   //require_auth( get_self() );
+   require_auth( entity );
+
+   if(itr->type == entity_type::NON_PARTNER) {
+      eosio::check(node_type == node_type::WRITER, "Non-partner entities can only add WRITER nodes");
+   }
 
    node_table nodes(get_self(), get_self().value);
-   auto itr = nodes.find( entity_name.value );
-
-   eosio::check(itr == nodes.end(), "A node with the same name already exists");
+   auto itr_node = nodes.find( entity.value );
+   eosio::check(itr_node == nodes.end(), "A node with the same name already exists");
 
    nodes.emplace( get_self(), [&]( auto& e ) {
       e.name     = node_name;
       e.entity   = entity;
       e.type     = node_type;
       e.bsa      = bsa;
-      e.enabled  = true;
       e.info     = "";
       e.reserved = 0;
    });
 }
 
 void lacchain::addvalidator( const name& name,
-                             const name& entity,
+                             const struct name& entity,
                              const eosio::block_signing_authority& validator_authority) {
    add_new_node(name, node_type::VALIDATOR, entity, validator_authority);
 }
 
 void lacchain::addwriter( const name& name,
-                          const name& entity,
+                          const struct name& entity,
                           const authority& writer_authority) {
-   add_new_entity(name, node_type::WRITER, entity, {});
+   add_new_node(name, node_type::WRITER, entity, {});
+
+   //Add new permission to the entity account for this writer node
+   updateauth_action(get_self(), {entity, "active"_n}).send( entity, name, "owner"_n, writer_authority);
+
+   //Add the new authority to the writer::access permission
+   writers_table wrt(get_self(), get_self().value);
+   auto itr = wrt.find( uint64_t(1) );
+
+   std::vector<permission_level_weight> writers;
+   if( itr == wrt.end()) {
+      wrt.emplace( get_self(), [&]( auto& row ) {
+         row.id      = uint64_t(1);
+         row.writers.push_back({{entity, name},1});
+         writers = row.writers;
+      });
+   } else {
+      wrt.modify( itr, eosio::same_payer, [&]( auto& row ) {
+         row.writers.push_back({{entity, name},1});
+         writers = row.writers;
+      });
+   }
    
-   
-   //TODO: create new permission on entity account
+   authority auth;
+   auth.threshold = 1;
+   auth.accounts  = writers;
+
+   updateauth_action(get_self(), {"writer"_n, "active"_n}).send( "writer"_n, "access"_n, "owner"_n, auth);
+
+   //1/N CPU/NET for entity account with at least one writer node
+   int64_t ram, cpu, net;
+   get_resource_limits( name, ram, cpu, net);
+   set_resource_limits( name, ram, 0, 0);
+
+   set_resource_limits( entity, ram, entity_with_writer_cpu, entity_with_writer_net );
 }
 
 void lacchain::addboot( const name& name,
-                        const name& entity ) {
-   add_new_entity(name, entity_type::BOOT, entity, {});
+                        const struct name& entity ) {
+   add_new_node(name, node_type::BOOT, entity, {});
 }
 
 void lacchain::addobserver( const name& name,
-                            const name& entity ) {
-   add_new_entity(name, entity_type::OBSERVER, entity, {});
+                            const struct name& entity ) {
+   add_new_node(name, node_type::OBSERVER, entity, {});
 }
 
-void lacchain::addnetlink( const name& entityA, const name& entityB, int direction ) {
+void lacchain::netaddgroup(const name& name, const std::vector<struct name>& nodes) {
    require_auth( get_self() );
 
-   netlink_table netlinks( get_self(), get_self().value );
-   auto index = netlinks.get_index<"pair"_n>();
-   auto itr = index.find( netlink::make_key(entityA.value, entityB.value) );
+   netgroup_table netgroups(get_self(), get_self().value);
+   auto itr_group = netgroups.find( name.value );
+   eosio::check(itr_group == netgroups.end(), "A group with the same name already exists");
 
-   auto update_link_record = [&]( auto& l ) {
-      l.nodeA     = nodeA;
-      l.nodeB     = nodeB;
-      l.direction = direction;
-   };
-
-   if( itr == index.end() ) {
-      node_table nodes(get_self(), get_self().value);
-
-      auto itr = nodes.find( nodeA.value );
-      eosio::check(itr != nodes.end(), "node A not found");
-      itr = nodes.find( nodeB.value );
-      eosio::check(itr != nodes.end(), "node B not found");
-
-      netlinks.emplace( get_self(), update_link_record);
-   } else {
-      netlinks.modify( *itr, eosio::same_payer, update_link_record);
-   }
+   netgroups.emplace( get_self(), [&]( auto& row ) {
+      row.name = name;
+      row.nodes = nodes;
+   });
 }
 
-void lacchain::rmnetlink( const name& nodeA, const name& nodeA ) {
+void lacchain::netrmgroup(const name& name) {
    require_auth( get_self() );
 
-   netlink_table netlinks( get_self(), get_self().value );
-   auto index = netlinks.get_index<"pair"_n>();
-   auto itr = index.find( netlink::make_key(nodeA.value, nodeB.value) );
-   eosio::check(itr != index.end(), "netlink not found");
-   index.erase( itr );
+   netgroup_table netgroups(get_self(), get_self().value);
+   auto itr_group = netgroups.find( name.value );
+   eosio::check(itr_group != netgroups.end(), "The group does not exists");
+
+   netgroups.erase( itr_group );
+}
+
+void lacchain::netsetgroup(const name& node, const std::vector<struct name>& groups) {
+   require_auth( get_self() );
+
+   node_table nodes(get_self(), get_self().value);
+   auto itr_node = nodes.find( node.value );
+   eosio::check(itr_node != nodes.end(), "node does not exists");
+
+   nodes.modify( itr_node, eosio::same_payer, [&]( auto& row ) {
+      row.net_groups = groups;
+   });
 }
 
 void lacchain::setschedule( const std::vector<name>& validators ) {
@@ -253,10 +262,10 @@ void lacchain::setschedule( const std::vector<name>& validators ) {
    
    ds << eosio::unsigned_int(validators.size());
 
-   entity_table entities(get_self(), get_self().value);
+   node_table nodes(get_self(), get_self().value);
    for(const auto& v : validators) {
-      auto itr = entities.find( v.value );
-      eosio::check(itr != entities.end() && itr->type == entity_type::VALIDATOR, "Validator not found");
+      auto itr = nodes.find( v.value );
+      eosio::check(itr != nodes.end() && itr->type == node_type::VALIDATOR, "Validator not found");
       eosio::check(!!itr->bsa, "Invalid block signing authority");
       schedule.push_back(eosio::producer_key{
          itr->name, std::get<eosio::block_signing_authority_v0>(*itr->bsa).keys[0].key
@@ -302,5 +311,56 @@ bool lacchain::validate_newuser_authority(const authority& auth) {
           weight_sum_without_entity < auth.threshold &&
           weight_sum_without_entity + entity_weight == auth.threshold;
 }
+
+void lacchain::setnodeinfo(const name& node, const std::string& info) {
+
+   node_table nodes(get_self(), get_self().value);
+   auto itr_node = nodes.find( node.value );
+   eosio::check(itr_node != nodes.end(), "node does not exists");
+
+   require_auth( itr_node->entity );
+
+   nodes.modify( itr_node, eosio::same_payer, [&]( auto& row ) {
+      row.info = info;
+   });
+}
+
+void lacchain::setnodexinfo(const name& node, const std::string& ext_info) {
+
+   node_table nodes(get_self(), get_self().value);
+   auto itr_node = nodes.find( node.value );
+   eosio::check(itr_node != nodes.end(), "node does not exists");
+
+   require_auth( get_self() );
+
+   nodes.modify( itr_node, eosio::same_payer, [&]( auto& row ) {
+      row.ext_info = ext_info;
+   });
+}
+
+void lacchain::setentinfo(const name& entity, const std::string& info) {
+   entity_table entities(get_self(), get_self().value);
+   auto itr_entity = entities.find( entity.value );
+   eosio::check(itr_entity != entities.end(), "entity does not exists");
+
+   require_auth( itr_entity->name );
+
+   entities.modify( itr_entity, eosio::same_payer, [&]( auto& row ) {
+      row.info = info;
+   });
+}
+
+void lacchain::setentxinfo(const name& entity, const std::string& ext_info) {
+   entity_table entities(get_self(), get_self().value);
+   auto itr_entity = entities.find( entity.value );
+   eosio::check(itr_entity != entities.end(), "entity does not exists");
+
+   require_auth( get_self() );
+
+   entities.modify( itr_entity, eosio::same_payer, [&]( auto& row ) {
+      row.ext_info = ext_info;
+   });
+}
+
 
 } //lacchainsystem

@@ -249,8 +249,8 @@ namespace lacchainsystem {
           */
          [[eosio::action]]
          void addentity(const name& entity_name,
-                        const entity_type entity_type,
-                        const std::optional<eosio::public_key> pubkey) {
+                        const uint64_t entity_type,
+                        const std::optional<eosio::public_key> pubkey);
 
          /**
           * Add new validator node
@@ -262,7 +262,7 @@ namespace lacchainsystem {
          [[eosio::action]]
          void addvalidator(
             const name& name,
-            const name& entity,
+            const struct name& entity,
             const eosio::block_signing_authority& validator_authority
          );
 
@@ -271,12 +271,12 @@ namespace lacchainsystem {
           *
           * @param name - writer node name.
           * @param entity - the parent entity of the node
-          * @param writer_authority - new entity authority for this writer node
+          * @param authority - permission authorization used for this node
           */
          [[eosio::action]]
          void addwriter(
             const name& name,
-            const name& entity,
+            const struct name& entity,
             const authority& writer_authority
          );
 
@@ -289,7 +289,7 @@ namespace lacchainsystem {
          [[eosio::action]]
          void addboot(
             const name& name,
-            const name& entity
+            const struct name& entity
          );
 
          /**
@@ -301,33 +301,41 @@ namespace lacchainsystem {
          [[eosio::action]]
          void addobserver(
             const name& observer,
-            const authority& owner
+            const name& entity
          );
 
          /**
-          * Add a new network link between two nodes
+          * Create a new group of nodes
           *
-          * @param nodeA - node A.
-          * @param nodeB - node B.
-          * @param direction - link direction
+          * @param name - group name.
+          * @param nodes - nodes.
           */
          [[eosio::action]]
-         void addnetlink(
-            const name& nodeA,
-            const name& nodeB,
-            int direction
+         void netaddgroup(
+            const name& name,
+            const std::vector<struct name>& nodes
          );
 
          /**
-          * Remove a new network link between two nodes
+          * Remove a group of nodes
           *
-          * @param nodeA - node A.
-          * @param nodeB - node B.
+          * @param name - group name to be removed.
           */
          [[eosio::action]]
-         void rmnetlink(
-            const name& nodeA,
-            const name& nodeB
+         void netrmgroup(
+            const name& name
+         );
+
+         /**
+          * Link a node with a group of nodes
+          *
+          * @param node - node name
+          * @param group - group name
+          */
+         [[eosio::action]]
+         void netsetgroup(
+            const name& node,
+            const std::vector<struct name>& group
          );
 
          /**
@@ -343,6 +351,18 @@ namespace lacchainsystem {
          );
 
          /**
+          * Set node extended information
+          *
+          * @param node - node name
+          * @param ext_info - node extended information
+          */
+         [[eosio::action]]
+         void setnodexinfo(
+            const name& node,
+            const std::string& ext_info
+         );
+
+         /**
           * Set entity information
           *
           * @param entity - entity name
@@ -350,6 +370,18 @@ namespace lacchainsystem {
           */
          [[eosio::action]]
          void setentinfo(
+            const name& entity,
+            const std::string& info
+         );
+
+         /**
+          * Set entity extended information
+          *
+          * @param entity - entity name
+          * @param ext_info - entity extended information
+          */
+         [[eosio::action]]
+         void setentxinfo(
             const name& entity,
             const std::string& info
          );
@@ -365,24 +397,24 @@ namespace lacchainsystem {
          [[eosio::action]]
          void setschedule( const std::vector<name>& validators );
 
-         enum entity_type {
+         enum entity_type : uint64_t {
             PARTNER     = 1,
             NON_PARTNER = 2,
          };
 
          struct [[eosio::table]] entity {
             name        name;
-            entity_type type;
+            uint64_t    type;
             std::string info;
-            //TODO: agregar info solo para ser modificada x la entidad
+            std::string ext_info;
 
             uint64_t primary_key()const { return name.value; }
-            EOSLIB_SERIALIZE( entity, (name)(type)(info))
+            EOSLIB_SERIALIZE( entity, (name)(type)(info)(ext_info))
          };
 
          typedef eosio::multi_index< "entity"_n, entity > entity_table;
 
-         enum node_type {
+         enum node_type : uint64_t {
             VALIDATOR = 1,
             WRITER    = 2,
             BOOT      = 3,
@@ -392,47 +424,41 @@ namespace lacchainsystem {
          using bsa = eosio::block_signing_authority;
          
          struct [[eosio::table]] node {
-            name                name;
-            name                entity;
-            int                 type;
-            std::optional<bsa>  bsa;
-            bool                enabled;
-            std::string         info;
-            uint64_t            reserved = 0;
+            name                       name;
+            struct name                entity;
+            int                        type;
+            std::optional<bsa>         bsa;
+            std::string                info;
+            std::string                ext_info;
+            std::vector<struct name>   net_groups;
+            uint64_t                   reserved = 0;
 
-            uint64_t primary_key()const { return id; }
+            uint64_t primary_key()const { return name.value; }
 
-            EOSLIB_SERIALIZE( node, (name)(entity)(type)(bsa)(enabled)(info)(reserved) )
+            EOSLIB_SERIALIZE( node, (name)(entity)(type)(bsa)(info)(ext_info)(net_groups)(reserved) )
          };
 
          typedef eosio::multi_index< "node"_n, node > node_table;
 
-         enum link_direction {
-            AB   = 1,
-            BA   = 2,
-            BOTH = 3,
+         struct [[eosio::table]] netgroup {
+            name                       name;
+            std::vector<struct name>   nodes;
+
+            uint64_t primary_key()const { return name.value; }
+            EOSLIB_SERIALIZE( netgroup, (name)(nodes) )
          };
+         typedef eosio::multi_index< "netgroup"_n, netgroup > netgroup_table;
 
-         struct [[eosio::table]] netlink {
-            uint64_t            id;
-            name                nodeA;
-            name                nodeB;
-            int                 direction;
-
+         struct [[eosio::table]] writers {
+            uint64_t                              id;
+            std::vector<permission_level_weight>  writers;
+            uint64_t                              reserved = 0;
+            
             uint64_t primary_key()const { return id; }
-            uint128_t secondary_key()const {  return make_key(nodeA.value, nodeB.value); }
 
-            static uint128_t make_key(uint64_t a, uint64_t b) {
-               if( b > a ) std::swap(a,b);
-               return uint128_t(a) << 64 | uint128_t(b);
-            }
-
-            EOSLIB_SERIALIZE( netlink, (id)(nodeA)(nodeB)(direction) )
+            EOSLIB_SERIALIZE( struct writers, (id)(writers)(reserved) )
          };
-
-         typedef eosio::multi_index< "netlink"_n, netlink,
-            eosio::indexed_by<"pair"_n, eosio::const_mem_fun<netlink, uint128_t, &netlink::secondary_key>>
-         > netlink_table;
+         typedef eosio::multi_index< "writers"_n, writers > writers_table;
 
          struct [[eosio::table]] abi_hash {
             name              owner;
@@ -466,11 +492,10 @@ namespace lacchainsystem {
 
       private:
 
-         void add_new_node(const name& node_name,
-                           const node_type node_type,
-                           const name& owner_entity,
-                           const authority& owner, const authority& active,
-                           const std::optional<eosio::block_signing_authority> bsa);
+         void add_new_node( const name& node_name,
+                            const node_type node_type,
+                            const name& entity,
+                            const std::optional<eosio::block_signing_authority> bsa );
 
          bool validate_newuser_authority(const authority& auth);
    };
