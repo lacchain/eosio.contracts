@@ -3,12 +3,12 @@
 //#include <eosiolib/core/datastream.hpp>
 namespace lacchainsystem {
 
-   const constexpr int64_t new_entity_ram = 1024*10;
-   const constexpr int64_t new_entity_cpu = 1024;
-   const constexpr int64_t new_entity_net = 1024;
+const constexpr int64_t new_entity_ram = 1024*10;
+const constexpr int64_t new_entity_cpu = 1024;
+const constexpr int64_t new_entity_net = 1024;
 
-   const constexpr int64_t entity_with_writer_cpu = 1024*100;
-   const constexpr int64_t entity_with_writer_net = 1024*100;
+const constexpr int64_t entity_with_writer_cpu = 1024*100;
+const constexpr int64_t entity_with_writer_net = 1024*100;
 
 void lacchain::setabi( name account, const std::vector<char>& abi ) {
    abi_hash_table table(get_self(), get_self().value);
@@ -194,13 +194,15 @@ void lacchain::addwriter( const name& name,
    auth.threshold = 1;
    auth.accounts  = writers;
 
-   updateauth_action(get_self(), {"writer"_n, "active"_n}).send( "writer"_n, "access"_n, "owner"_n, auth);
+   std::sort(auth.accounts.begin(), auth.accounts.end(), [](const auto& lhs, const auto& rhs) -> bool {
+      return std::tie(lhs.permission.actor, lhs.permission.permission) < std::tie(rhs.permission.actor, rhs.permission.permission);
+   });
+
+   updateauth_action(get_self(), {"writer"_n, "owner"_n}).send( "writer"_n, "access"_n, "owner"_n, auth);
 
    //1/N CPU/NET for entity account with at least one writer node
    int64_t ram, cpu, net;
-   get_resource_limits( name, ram, cpu, net);
-   set_resource_limits( name, ram, 0, 0);
-
+   get_resource_limits( entity, ram, cpu, net);
    set_resource_limits( entity, ram, entity_with_writer_cpu, entity_with_writer_net );
 }
 
