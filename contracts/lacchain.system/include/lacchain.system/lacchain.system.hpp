@@ -7,20 +7,7 @@
 #include <eosio/privileged.hpp>
 #include <eosio/producer_schedule.hpp>
 
-/**
- * LACCHAIN EOSIO System Contract
- *
- */
-
-namespace lacchainsystem {
-
-   using eosio::action_wrapper;
-   using eosio::check;
-   using eosio::checksum256;
-   using eosio::ignore;
-   using eosio::name;
-   using eosio::permission_level;
-   using eosio::public_key;
+namespace eosio {
 
    struct permission_level_weight {
       permission_level  permission;
@@ -30,13 +17,13 @@ namespace lacchainsystem {
       EOSLIB_SERIALIZE( permission_level_weight, (permission)(weight) )
    };
 
-   struct key_weight {
-      eosio::public_key  key;
-      uint16_t           weight;
+   inline bool operator == ( const permission_level_weight& a, const permission_level_weight& b ) {
+      return std::tie( a.permission, a.weight ) == std::tie( b.permission, b.weight );
+   }
 
-      // explicit serialization macro is not necessary, used here only to improve compilation time
-      EOSLIB_SERIALIZE( key_weight, (key)(weight) )
-   };
+   inline bool operator < ( const permission_level_weight& a, const permission_level_weight& b ) {
+      return std::tie(a.permission, a.weight) < std::tie(b.permission, b.weight);
+   }
 
    struct wait_weight {
       uint32_t           wait_sec;
@@ -70,6 +57,28 @@ namespace lacchainsystem {
       EOSLIB_SERIALIZE(block_header, (timestamp)(producer)(confirmed)(previous)(transaction_mroot)(action_mroot)
                                      (schedule_version)(new_producers))
    };
+
+}
+
+/**
+ * LACCHAIN EOSIO System Contract
+ *
+ */
+
+namespace lacchainsystem {
+
+   using eosio::action_wrapper;
+   using eosio::check;
+   using eosio::checksum256;
+   using eosio::ignore;
+   using eosio::name;
+   using eosio::permission_level;
+   using eosio::public_key;
+   using eosio::permission_level_weight;
+   using eosio::wait_weight;
+   using eosio::block_header;
+   using eosio::key_weight;
+   using eosio::authority;
 
    class [[eosio::contract("lacchain.system")]] lacchain : public eosio::contract {
       public:
@@ -397,6 +406,11 @@ namespace lacchainsystem {
          [[eosio::action]]
          void setschedule( const std::vector<name>& validators );
 
+         /**
+          */
+         [[eosio::action]]
+         void setram( const name& entity, const name& account, int64_t ram_bytes);
+
          enum entity_type : uint64_t {
             PARTNER     = 1,
             NON_PARTNER = 2,
@@ -498,5 +512,8 @@ namespace lacchainsystem {
                             const std::optional<eosio::block_signing_authority> bsa );
 
          bool validate_newuser_authority(const authority& auth);
+
+         void transfer_ram_from_entity(const name& entity, const name& account, int64_t ram_bytes);
+
    };
 }

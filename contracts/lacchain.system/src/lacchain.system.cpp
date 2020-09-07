@@ -3,7 +3,8 @@
 //#include <eosiolib/core/datastream.hpp>
 namespace lacchainsystem {
 
-const constexpr int64_t new_entity_ram = 1024*10;
+const constexpr int64_t new_entity_ram = 1024*1024*10;
+
 const constexpr int64_t new_entity_cpu = 1024;
 const constexpr int64_t new_entity_net = 1024;
 
@@ -62,7 +63,32 @@ void lacchain::newaccount( name creator, name name, const authority& owner, cons
    entity_table entities(get_self(), get_self().value);
    auto itr = entities.find( creator.value );
 
-   if( itr == entities.end() ) {
+   //Chec if the creator of the new account is a Lacchain entity
+   //this could be for a new validator node or new user account.
+   if( itr != entities.end() ) {
+      node_table nodes(get_self(), get_self().value);
+      auto itr_node = nodes.find( name.value );
+
+      // 1) Check if validator node account is being created
+      if( itr_node != nodes.end() ) {
+         eosio::check(itr_node->type == node_type::VALIDATOR, "newaccount only for validators nodes");
+         transfer_ram_from_entity(creator, name, 10240);
+
+      // 2) A new user account is being created
+      } else {
+         //OPTIONAL?: read the full tx and verify that this action has been authorized 
+         //           by one of the "writers" authorities
+         eosio::check(validate_newuser_authority(active), "invalid active authority");
+         eosio::check(validate_newuser_authority(owner), "invalid owner authority");
+
+         //0 CPU/NET + 3k RAM for user accounts
+         int64_t ram, cpu, net;
+         get_resource_limits( name, ram, cpu, net);
+         set_resource_limits( name, ram, 0, 0);
+         transfer_ram_from_entity(creator, name, 3*1024);
+      }
+   } else {
+      //Check that permissioning committee is creating a new Lacchain entity account
       eosio::check(creator == get_self(), "Only the permissioning committee can create an entity account");
 
       entity_table entities(get_self(), get_self().value);
@@ -71,17 +97,6 @@ void lacchain::newaccount( name creator, name name, const authority& owner, cons
 
       //set resources to newly created entity account
       set_resource_limits( name, new_entity_ram, new_entity_cpu, new_entity_net);
-   } else {
-      //OPTIONAL?: read the full tx and verify that this action has been authorized 
-      //           by one of the "writers" authorities
-
-      eosio::check(validate_newuser_authority(active), "invalid active authority");
-      eosio::check(validate_newuser_authority(owner), "invalid owner authority");
-
-      //0 CPU/NET for user accounts
-      int64_t ram, cpu, net;
-      get_resource_limits( name, ram, cpu, net);
-      set_resource_limits( name, ram, 0, 0);
    }
 }
 
@@ -162,43 +177,88 @@ void lacchain::addvalidator( const name& name,
                              const struct name& entity,
                              const eosio::block_signing_authority& validator_authority) {
    add_new_node(name, node_type::VALIDATOR, entity, validator_authority);
+
+   auto active_authority = authority{
+      1, {},
+      {{{entity, "active"_n}, 1}},{}
+   };
+
+   auto owner_authority = authority{
+      1, {},
+      {{{entity, "owner"_n}, 1}},{}
+   };
+
+   // Create new validator account
+   newaccount_action(get_self(), {entity, "active"_n}).send(
+      entity, name, owner_authority, active_authority
+   );
+
 }
 
 void lacchain::addwriter( const name& name,
                           const struct name& entity,
                           const authority& writer_authority) {
+
+   check(name != "writer"_n, "Writer name can't be 'writer'");
+
    add_new_node(name, node_type::WRITER, entity, {});
+
+   auto add_to_writer_table = [&](uint64_t scope, const struct name& e, const struct name& n) -> std::vector<permission_level_weight> {
+
+      std::vector<permission_level_weight> accounts;
+
+      auto insert_new = [](std::vector<permission_level_weight>& accts, const permission_level_weight& pl) {
+
+         auto it = std::find(accts.cbegin(), accts.cend(), pl);
+         if(it != accts.end()) return;
+
+         accts.insert(
+            std::upper_bound( accts.begin(), accts.end(), pl ),
+            pl
+        );
+      };
+
+      writers_table wrt(get_self(), scope);
+      auto itr = wrt.find( uint64_t(1) );
+      if( itr == wrt.end()) {
+         wrt.emplace( get_self(), [&]( auto& row ) {
+            row.id      = uint64_t(1);
+            insert_new(row.writers, {{e, n},1});
+            accounts = row.writers;
+         });
+      } else {
+         wrt.modify( itr, eosio::same_payer, [&]( auto& row ) {
+            insert_new(row.writers, {{e, n},1});
+            accounts = row.writers;
+         });
+      }
+
+      return accounts;
+   };
+
+   //Add new writer to the list of global writers
+   authority global_writers;
+   global_writers.threshold = 1;
+   global_writers.accounts = add_to_writer_table(get_self().value, entity, "writer"_n);
+
+   //Add new writer to the list of entity writers
+   authority entity_writers;
+   entity_writers.threshold = 1;
+   entity_writers.accounts = add_to_writer_table(entity.value, entity, name);
 
    //Add new permission to the entity account for this writer node
    updateauth_action(get_self(), {entity, "active"_n}).send( entity, name, "owner"_n, writer_authority);
 
-   //Add the new authority to the writer::access permission
-   writers_table wrt(get_self(), get_self().value);
-   auto itr = wrt.find( uint64_t(1) );
+   //Update entity "writer" permission
+   updateauth_action(get_self(), {entity, "active"_n}).send( entity, "writer"_n, "active"_n, entity_writers);
 
-   std::vector<permission_level_weight> writers;
-   if( itr == wrt.end()) {
-      wrt.emplace( get_self(), [&]( auto& row ) {
-         row.id      = uint64_t(1);
-         row.writers.push_back({{entity, name},1});
-         writers = row.writers;
-      });
-   } else {
-      wrt.modify( itr, eosio::same_payer, [&]( auto& row ) {
-         row.writers.push_back({{entity, name},1});
-         writers = row.writers;
-      });
-   }
-   
-   authority auth;
-   auth.threshold = 1;
-   auth.accounts  = writers;
+   //Update writer "access" permission
+   updateauth_action(get_self(), {"writer"_n, "owner"_n}).send( "writer"_n, "access"_n, "active"_n, global_writers);
 
-   std::sort(auth.accounts.begin(), auth.accounts.end(), [](const auto& lhs, const auto& rhs) -> bool {
-      return std::tie(lhs.permission.actor, lhs.permission.permission) < std::tie(rhs.permission.actor, rhs.permission.permission);
-   });
-
-   updateauth_action(get_self(), {"writer"_n, "owner"_n}).send( "writer"_n, "access"_n, "owner"_n, auth);
+   //Link general "writer" with eosio::newaccount / writer::fuel / eosio::setram
+   linkauth_action(get_self(), {entity, "active"_n}).send( entity, "eosio"_n, "newaccount"_n, "writer"_n);
+   linkauth_action(get_self(), {entity, "active"_n}).send( entity, "eosio"_n, "setram"_n, "writer"_n);
+   linkauth_action(get_self(), {entity, "active"_n}).send( entity, "writer"_n, "run"_n, "writer"_n);
 
    //1/N CPU/NET for entity account with at least one writer node
    int64_t ram, cpu, net;
@@ -322,7 +382,7 @@ void lacchain::setnodeinfo(const name& node, const std::string& info) {
 
    require_auth( itr_node->entity );
 
-   nodes.modify( itr_node, eosio::same_payer, [&]( auto& row ) {
+   nodes.modify( itr_node, itr_node->entity, [&]( auto& row ) {
       row.info = info;
    });
 }
@@ -347,7 +407,7 @@ void lacchain::setentinfo(const name& entity, const std::string& info) {
 
    require_auth( itr_entity->name );
 
-   entities.modify( itr_entity, eosio::same_payer, [&]( auto& row ) {
+   entities.modify( itr_entity, itr_entity->name, [&]( auto& row ) {
       row.info = info;
    });
 }
@@ -362,6 +422,33 @@ void lacchain::setentxinfo(const name& entity, const std::string& ext_info) {
    entities.modify( itr_entity, eosio::same_payer, [&]( auto& row ) {
       row.ext_info = ext_info;
    });
+}
+
+void lacchain::transfer_ram_from_entity(const name& entity, const name& account, int64_t ram_bytes) {
+   int64_t e_ram, e_cpu, e_net;
+   get_resource_limits( entity, e_ram, e_cpu, e_net);
+   set_resource_limits( entity, e_ram-ram_bytes, e_cpu, e_net);
+
+   int64_t a_ram, a_cpu, a_net;
+   get_resource_limits( account, a_ram, a_cpu, a_net);
+   set_resource_limits( account, a_ram+ram_bytes, a_cpu, a_net);
+}
+
+void lacchain::setram( const name& entity, const name& account, int64_t ram_bytes) {
+   check(ram_bytes > 0, "ram_bytes must be positive");
+
+   entity_table entities(get_self(), get_self().value);
+   auto itr_entity = entities.find( entity.value );
+   eosio::check(entities.find( entity.value ) != entities.end(), "entity does not exists");
+
+   require_auth( entity );
+
+   node_table nodes(get_self(), get_self().value);
+   eosio::check( entities.find( account.value ) == entities.end()
+              && nodes.find( account.value ) == nodes.end()
+              && account != "writer"_n, "only user accounts can be changed");
+
+   transfer_ram_from_entity(entity, account, ram_bytes);
 }
 
 
