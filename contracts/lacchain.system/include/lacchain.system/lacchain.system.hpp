@@ -262,6 +262,13 @@ namespace lacchainsystem {
                         const std::optional<eosio::public_key> pubkey);
 
          /**
+          * Remove lacchain entity
+          *
+          * @param entity_name - entity name.
+          */
+         void rmentity(const name& entity_name);
+
+         /**
           * Add new validator node
           *
           * @param name - validator node name.
@@ -411,7 +418,11 @@ namespace lacchainsystem {
          [[eosio::action]]
          void setram( const name& entity, const name& account, int64_t ram_bytes);
 
+         [[eosio::action]]
+         void onblock( const block_header& bh );
+
          enum entity_type : uint64_t {
+            DISABLED    = 0,
             PARTNER     = 1,
             NON_PARTNER = 2,
          };
@@ -448,11 +459,14 @@ namespace lacchainsystem {
             uint64_t                   reserved = 0;
 
             uint64_t primary_key()const { return name.value; }
+            uint64_t secondary_key()const { return entity.value; }
 
             EOSLIB_SERIALIZE( node, (name)(entity)(type)(bsa)(info)(ext_info)(net_groups)(reserved) )
          };
 
-         typedef eosio::multi_index< "node"_n, node > node_table;
+         typedef eosio::multi_index< "node"_n, node,
+            eosio::indexed_by<"by.entity"_n, eosio::const_mem_fun<node, uint64_t, &node::secondary_key>>
+          > node_table;
 
          struct [[eosio::table]] netgroup {
             name                       name;
@@ -500,8 +514,8 @@ namespace lacchainsystem {
          using reqactivated_action = action_wrapper<"reqactivated"_n, &lacchain::reqactivated>;
 
          [[eosio::action]]
-         void dummy() {
-            eosio::print("I'm a dummy action!");
+         void reindex() {
+            //eosio::print("I'm a dummy action!");
          }
 
       private:

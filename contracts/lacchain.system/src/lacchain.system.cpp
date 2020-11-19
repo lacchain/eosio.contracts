@@ -58,12 +58,17 @@ void lacchain::reqactivated( const eosio::checksum256& feature_digest ) {
    eosio::check( is_feature_activated( feature_digest ), "protocol feature is not activated" );
 }
 
+void lacchain::onblock( const block_header& bh ) {
+   //TODO: track schedule here
+   eosio::internal_use_do_not_use::prints("test!!");
+}
+
 void lacchain::newaccount( name creator, name name, const authority& owner, const authority& active ) {
 
    entity_table entities(get_self(), get_self().value);
    auto itr = entities.find( creator.value );
 
-   //Chec if the creator of the new account is a Lacchain entity
+   //Check if the creator of the new account is a Lacchain entity
    //this could be for a new validator node or new user account.
    if( itr != entities.end() ) {
       node_table nodes(get_self(), get_self().value);
@@ -142,6 +147,39 @@ void lacchain::addentity(const name& entity_name,
 
 }
 
+void lacchain::rmentity(const name& entity_name) {
+
+   require_auth( get_self() );
+
+   entity_table entities(get_self(), get_self().value);
+   auto itr = entities.find( entity_name.value );
+   eosio::check( itr != entities.end(), "Entity not found" );
+
+   //Remove all nodes
+   node_table nodes(get_self(), get_self().value);
+   auto by_entity_index = nodes.get_index<"by.entity"_n>();
+
+   std::vector<name> validators;
+   std::vector<name> writers;
+   auto itr_node = by_entity_index.lower_bound( entity_name.value );
+   while(itr_node != by_entity_index.end() && itr_node->entity == entity_name ) {
+      if(itr_node->type == node_type::WRITER) {
+         writers.push_back(itr_node->name);
+      } else if (itr_node->type == node_type::VALIDATOR) {
+         validators.push_back(itr_node->name);
+      }
+      nodes.erase(*itr_node);
+      itr_node++;
+   }
+
+   //Check that no validator is in the current schedule
+   
+
+
+
+
+
+}
 
 
 void lacchain::add_new_node( const name& node_name,
