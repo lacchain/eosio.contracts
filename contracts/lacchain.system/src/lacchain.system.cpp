@@ -138,12 +138,13 @@ void lacchain::addentity(const name& entity_name,
    }
 
    // Create new entity account 
-   newaccount_action(get_self(), {get_self(), "active"_n}).send(
-      get_self(), 
-      entity_name, 
-      owner_authority,
-      active_authority
-   );
+   if (!is_account(entity_name))
+      newaccount_action(get_self(), {get_self(), "active"_n}).send(
+         get_self(), 
+         entity_name, 
+         owner_authority,
+         active_authority
+      );
 
 }
 
@@ -152,8 +153,10 @@ void lacchain::rmentity(const name& entity_name) {
    require_auth( get_self() );
 
    entity_table entities(get_self(), get_self().value);
-   auto itr = entities.find( entity_name.value );
-   eosio::check( itr != entities.end(), "Entity not found" );
+   auto entity_itr = entities.find( entity_name.value );
+   eosio::check( entity_itr != entities.end(), "Entity not found" );
+   // Remove entity from entity table
+   entities.erase( entity_itr );
 
    //Remove all nodes
    node_table nodes(get_self(), get_self().value);
@@ -168,17 +171,45 @@ void lacchain::rmentity(const name& entity_name) {
       } else if (itr_node->type == node_type::VALIDATOR) {
          validators.push_back(itr_node->name);
       }
-      nodes.erase(*itr_node);
-      itr_node++;
+      by_entity_index.erase(itr_node);
+      itr_node = by_entity_index.lower_bound( entity_name.value );
    }
 
-   //Check that no validator is in the current schedule
-   
+   // TODO: Check that no validator is in the current schedule
 
+   if (writers.size() > 0) {
+      // deleteauth for every writer from entity account 
+      for (auto &writer : writers) {
+         deleteauth_action(get_self(), {entity_name, "active"_n}).send( entity_name, writer );
+      }
 
+      // delete permission writer in entity, and corresponding table
+      unlinkauth_action(get_self(), {entity_name, "active"_n}).send( entity_name, "eosio"_n, "newaccount"_n );
+      unlinkauth_action(get_self(), {entity_name, "active"_n}).send( entity_name, "eosio"_n, "setram"_n );
+      unlinkauth_action(get_self(), {entity_name, "active"_n}).send( entity_name, "writer"_n, "run"_n );
 
+      writers_table wrt(get_self(), entity_name.value);
+      auto writers_itr = wrt.find( uint64_t(1) );
+      wrt.erase( writers_itr );
+      deleteauth_action(get_self(), {entity_name, "active"_n}).send( entity_name, "writer"_n );
 
+      // remove entity from writer permission and corresponding table
+      authority global_writers;
+      global_writers.threshold = 1;
 
+      std::vector<permission_level_weight> ent_writers_vector;
+      writers_table global_wrt(get_self(), get_self().value );
+      auto itr = global_wrt.find( uint64_t(1) );
+      global_wrt.modify( itr, eosio::same_payer, [&]( auto& row ) {
+         permission_level_weight entity_plw = {{entity_name, "writer"_n},1};
+         auto entity_it = std::find(row.writers.cbegin(), row.writers.cend(), entity_plw);
+         row.writers.erase( entity_it );
+         ent_writers_vector = row.writers;
+      });
+      global_writers.accounts = ent_writers_vector;
+      // If there was only one writer entity, the following fails for being empty
+      updateauth_action(get_self(), {"writer"_n, "active"_n}).send( "writer"_n, "access"_n, "active"_n, global_writers);
+   }
 }
 
 
@@ -265,10 +296,12 @@ void lacchain::addwriter( const name& name,
             accounts = row.writers;
          });
       } else {
+         auto old_writers = itr->writers;
          wrt.modify( itr, eosio::same_payer, [&]( auto& row ) {
             insert_new(row.writers, {{e, n},1});
             accounts = row.writers;
          });
+         if (old_writers == accounts) return {};
       }
 
       return accounts;
@@ -285,19 +318,21 @@ void lacchain::addwriter( const name& name,
    entity_writers.accounts = add_to_writer_table(entity.value, entity, name);
 
    //Add new permission to the entity account for this writer node
+   // TODO: check if writer already exists, to handle the error.
    updateauth_action(get_self(), {entity, "active"_n}).send( entity, name, "owner"_n, writer_authority);
 
    //Update entity "writer" permission
    updateauth_action(get_self(), {entity, "active"_n}).send( entity, "writer"_n, "active"_n, entity_writers);
 
-   //Update writer "access" permission
-   updateauth_action(get_self(), {"writer"_n, "owner"_n}).send( "writer"_n, "access"_n, "active"_n, global_writers);
+   if (!global_writers.accounts.empty()) {
+      //Update writer "access" permission
+      updateauth_action(get_self(), {"writer"_n, "owner"_n}).send( "writer"_n, "access"_n, "active"_n, global_writers);
 
-   //Link general "writer" with eosio::newaccount / writer::fuel / eosio::setram
-   linkauth_action(get_self(), {entity, "active"_n}).send( entity, "eosio"_n, "newaccount"_n, "writer"_n);
-   linkauth_action(get_self(), {entity, "active"_n}).send( entity, "eosio"_n, "setram"_n, "writer"_n);
-   linkauth_action(get_self(), {entity, "active"_n}).send( entity, "writer"_n, "run"_n, "writer"_n);
-
+      //Link general "writer" with eosio::newaccount / writer::fuel / eosio::setram
+      linkauth_action(get_self(), {entity, "active"_n}).send( entity, "eosio"_n, "newaccount"_n, "writer"_n);
+      linkauth_action(get_self(), {entity, "active"_n}).send( entity, "eosio"_n, "setram"_n, "writer"_n);
+      linkauth_action(get_self(), {entity, "active"_n}).send( entity, "writer"_n, "run"_n, "writer"_n);
+   }
    //1/N CPU/NET for entity account with at least one writer node
    int64_t ram, cpu, net;
    get_resource_limits( entity, ram, cpu, net);
