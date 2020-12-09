@@ -266,6 +266,7 @@ namespace lacchainsystem {
           *
           * @param entity_name - entity name.
           */
+         [[eosio::action]]
          void rmentity(const name& entity_name);
 
          /**
@@ -333,6 +334,28 @@ namespace lacchainsystem {
          );
 
          /**
+          * Remove a node
+          *
+          * @param node_name - node name
+          */
+         [[eosio::action]]
+         void rmnode(
+            const name& node_name
+         );
+
+
+         /**
+          * Proposed action:
+          * Remove writer permissions from an entity
+          * @param entity - entity
+          */
+         [[eosio::action]]
+         void removeentwri(
+            const name& entity
+         );
+
+
+         /**
           * Remove a group of nodes
           *
           * @param name - group name to be removed.
@@ -343,15 +366,15 @@ namespace lacchainsystem {
          );
 
          /**
-          * Link a node with a group of nodes
+          * Link a node with a list of groups
           *
           * @param node - node name
-          * @param group - group name
+          * @param groups - groups names
           */
          [[eosio::action]]
          void netsetgroup(
             const name& node,
-            const std::vector<struct name>& group
+            const std::vector<struct name>& groups
          );
 
          /**
