@@ -207,12 +207,24 @@ void lacchain::rmentity(const name& entity_name) {
          ent_writers_vector = row.writers;
       });
       global_writers.accounts = ent_writers_vector;
-      // If there was only one writer entity, the following fails for being empty.
-      // It is reasonable to keep at least one writer, thus we might
-      // add a check for this.
+      // If there was only one writer entity, the following would fail for being empty.
+      // It is reasonable to keep at least one writer, thus we might add a check for this.
       updateauth_action(get_self(), {"writer"_n, "active"_n}).send( "writer"_n, "access"_n, "active"_n, global_writers);
    }
-   // TODO: remove entity's nodes from the groups where they belong.
+
+   // Removes entity's nodes from the groups where they belong
+   netgroup_table netgroups(get_self(), get_self().value);
+   for (auto &netgroup : netgroups) {
+      netgroups.modify( netgroup, eosio::same_payer, [&]( auto& row ){
+         auto new_end = remove_if( row.nodes.begin(), row.nodes.end(), 
+            [&]( name& node ){
+               bool is_writer = ( find(writers.begin(), writers.end(), node) != writers.end() );
+               bool is_validator = ( find(validators.begin(), validators.end(), node) != validators.end() );
+               return (is_writer || is_validator);
+            } );
+         row.nodes.resize( new_end - row.nodes.begin() );
+      });
+   }
 }
 
 
@@ -363,7 +375,7 @@ void lacchain::rmnode( const name& node_name ){
    require_auth( entity );
 
    if (itr_node->type == 1){ // validator case
-   // check that it is not in the schedule
+   // TODO: check that it is not in the schedule
    }
    if (itr_node->type == 2){ // writer case
       writers_table wrts(get_self(), entity.value);
