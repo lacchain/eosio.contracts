@@ -389,6 +389,26 @@ void lacchain::rmnode( const name& node_name ){
          entity_writers.accounts = row.writers;
          if (row.writers.size() > 0) updateauth_action(get_self(), {entity, "active"_n})
            .send( entity, "writer"_n, "active"_n, entity_writers);
+         else {
+            // delete entity@writer permission, which requires unlinkauth
+            unlinkauth_action(get_self(), {entity, "active"_n}).send( entity, "eosio"_n, "newaccount"_n );
+            unlinkauth_action(get_self(), {entity, "active"_n}).send( entity, "eosio"_n, "setram"_n );
+            unlinkauth_action(get_self(), {entity, "active"_n}).send( entity, "writer"_n, "run"_n );
+            deleteauth_action(get_self(), {entity, "active"_n}).send( entity, "writer"_n );
+            // delete entity from global writers
+            writers_table global_wrts(get_self(), get_self().value);
+            auto g_writers_itr = global_wrts.find( uint64_t(1) );
+            global_wrts.modify( g_writers_itr, eosio::same_payer, [&](auto& row){
+               permission_level_weight this_entity = {{entity, "writer"_n},1};
+               auto new_end = remove( row.writers.begin(), row.writers.end(), this_entity );
+               row.writers.resize( new_end - row.writers.begin() );
+               authority global_writers;
+               global_writers.threshold = 1;
+               global_writers.accounts = row.writers;
+               updateauth_action(get_self(), {"writer"_n, "owner"_n}).send( "writer"_n, "access"_n, 
+                  "active"_n, global_writers);
+            });
+         }
       });
       deleteauth_action(get_self(), {entity, "owner"_n}).send( entity, node_name );
    }
@@ -402,31 +422,6 @@ void lacchain::rmnode( const name& node_name ){
       });
    }
 }
-
-void lacchain::removeentwri (const name& entity) {
-   writers_table wrts(get_self(), entity.value);
-   auto writers_itr = wrts.find( uint64_t(1) );
-   check( (writers_itr->writers).empty(), "This entity still has writer nodes");
-
-   unlinkauth_action(get_self(), {entity, "active"_n}).send( entity, "eosio"_n, "newaccount"_n );
-   unlinkauth_action(get_self(), {entity, "active"_n}).send( entity, "eosio"_n, "setram"_n );
-   unlinkauth_action(get_self(), {entity, "active"_n}).send( entity, "writer"_n, "run"_n );
-   deleteauth_action(get_self(), {entity, "active"_n}).send( entity, "writer"_n );
-
-   writers_table global_wrts(get_self(), get_self().value);
-   auto g_writers_itr = global_wrts.find( uint64_t(1) );
-   global_wrts.modify( g_writers_itr, eosio::same_payer, [&](auto& row){
-      permission_level_weight this_entity = {{entity, "writer"_n},1};
-      auto new_end = remove( row.writers.begin(), row.writers.end(), this_entity );
-      row.writers.resize( new_end - row.writers.begin() );
-      authority global_writers;
-      global_writers.threshold = 1;
-      global_writers.accounts = row.writers;
-      updateauth_action(get_self(), {"writer"_n, "owner"_n}).send( "writer"_n, "access"_n, 
-         "active"_n, global_writers);
-   });
-}
-
 
 void lacchain::netaddgroup(const name& name, const std::vector<struct name>& nodes) {
    require_auth( get_self() );

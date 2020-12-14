@@ -343,18 +343,6 @@ namespace lacchainsystem {
             const name& node_name
          );
 
-
-         /**
-          * Proposed action:
-          * Remove writer permissions from an entity
-          * @param entity - entity
-          */
-         [[eosio::action]]
-         void removeentwri(
-            const name& entity
-         );
-
-
          /**
           * Remove a group of nodes
           *
