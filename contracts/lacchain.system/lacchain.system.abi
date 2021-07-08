@@ -1,0 +1,1047 @@
+{
+    "____comment": "This file was generated with eosio-abigen. DO NOT EDIT ",
+    "version": "eosio::abi/1.1",
+    "types": [
+        {
+            "new_type_name": "block_signing_authority",
+            "type": "variant_block_signing_authority_v0"
+        },
+        {
+            "new_type_name": "bsa",
+            "type": "block_signing_authority"
+        }
+    ],
+    "structs": [
+        {
+            "name": "abi_hash",
+            "base": "",
+            "fields": [
+                {
+                    "name": "owner",
+                    "type": "name"
+                },
+                {
+                    "name": "hash",
+                    "type": "checksum256"
+                }
+            ]
+        },
+        {
+            "name": "activate",
+            "base": "",
+            "fields": [
+                {
+                    "name": "feature_digest",
+                    "type": "checksum256"
+                }
+            ]
+        },
+        {
+            "name": "addboot",
+            "base": "",
+            "fields": [
+                {
+                    "name": "name",
+                    "type": "name"
+                },
+                {
+                    "name": "entity",
+                    "type": "name"
+                }
+            ]
+        },
+        {
+            "name": "addentity",
+            "base": "",
+            "fields": [
+                {
+                    "name": "entity_name",
+                    "type": "name"
+                },
+                {
+                    "name": "entity_type",
+                    "type": "uint64"
+                },
+                {
+                    "name": "pubkey",
+                    "type": "public_key?"
+                }
+            ]
+        },
+        {
+            "name": "addobserver",
+            "base": "",
+            "fields": [
+                {
+                    "name": "observer",
+                    "type": "name"
+                },
+                {
+                    "name": "entity",
+                    "type": "name"
+                }
+            ]
+        },
+        {
+            "name": "addvalidator",
+            "base": "",
+            "fields": [
+                {
+                    "name": "name",
+                    "type": "name"
+                },
+                {
+                    "name": "entity",
+                    "type": "name"
+                },
+                {
+                    "name": "validator_authority",
+                    "type": "block_signing_authority"
+                }
+            ]
+        },
+        {
+            "name": "addwriter",
+            "base": "",
+            "fields": [
+                {
+                    "name": "name",
+                    "type": "name"
+                },
+                {
+                    "name": "entity",
+                    "type": "name"
+                },
+                {
+                    "name": "writer_authority",
+                    "type": "authority"
+                }
+            ]
+        },
+        {
+            "name": "authority",
+            "base": "",
+            "fields": [
+                {
+                    "name": "threshold",
+                    "type": "uint32"
+                },
+                {
+                    "name": "keys",
+                    "type": "key_weight[]"
+                },
+                {
+                    "name": "accounts",
+                    "type": "permission_level_weight[]"
+                },
+                {
+                    "name": "waits",
+                    "type": "wait_weight[]"
+                }
+            ]
+        },
+        {
+            "name": "block_header",
+            "base": "",
+            "fields": [
+                {
+                    "name": "timestamp",
+                    "type": "uint32"
+                },
+                {
+                    "name": "producer",
+                    "type": "name"
+                },
+                {
+                    "name": "confirmed",
+                    "type": "uint16"
+                },
+                {
+                    "name": "previous",
+                    "type": "checksum256"
+                },
+                {
+                    "name": "transaction_mroot",
+                    "type": "checksum256"
+                },
+                {
+                    "name": "action_mroot",
+                    "type": "checksum256"
+                },
+                {
+                    "name": "schedule_version",
+                    "type": "uint32"
+                },
+                {
+                    "name": "new_producers",
+                    "type": "producer_schedule?"
+                }
+            ]
+        },
+        {
+            "name": "block_signing_authority_v0",
+            "base": "",
+            "fields": [
+                {
+                    "name": "threshold",
+                    "type": "uint32"
+                },
+                {
+                    "name": "keys",
+                    "type": "key_weight[]"
+                }
+            ]
+        },
+        {
+            "name": "blockchain_parameters",
+            "base": "",
+            "fields": [
+                {
+                    "name": "max_block_net_usage",
+                    "type": "uint64"
+                },
+                {
+                    "name": "target_block_net_usage_pct",
+                    "type": "uint32"
+                },
+                {
+                    "name": "max_transaction_net_usage",
+                    "type": "uint32"
+                },
+                {
+                    "name": "base_per_transaction_net_usage",
+                    "type": "uint32"
+                },
+                {
+                    "name": "net_usage_leeway",
+                    "type": "uint32"
+                },
+                {
+                    "name": "context_free_discount_net_usage_num",
+                    "type": "uint32"
+                },
+                {
+                    "name": "context_free_discount_net_usage_den",
+                    "type": "uint32"
+                },
+                {
+                    "name": "max_block_cpu_usage",
+                    "type": "uint32"
+                },
+                {
+                    "name": "target_block_cpu_usage_pct",
+                    "type": "uint32"
+                },
+                {
+                    "name": "max_transaction_cpu_usage",
+                    "type": "uint32"
+                },
+                {
+                    "name": "min_transaction_cpu_usage",
+                    "type": "uint32"
+                },
+                {
+                    "name": "max_transaction_lifetime",
+                    "type": "uint32"
+                },
+                {
+                    "name": "deferred_trx_expiration_window",
+                    "type": "uint32"
+                },
+                {
+                    "name": "max_transaction_delay",
+                    "type": "uint32"
+                },
+                {
+                    "name": "max_inline_action_size",
+                    "type": "uint32"
+                },
+                {
+                    "name": "max_inline_action_depth",
+                    "type": "uint16"
+                },
+                {
+                    "name": "max_authority_depth",
+                    "type": "uint16"
+                }
+            ]
+        },
+        {
+            "name": "canceldelay",
+            "base": "",
+            "fields": [
+                {
+                    "name": "canceling_auth",
+                    "type": "permission_level"
+                },
+                {
+                    "name": "trx_id",
+                    "type": "checksum256"
+                }
+            ]
+        },
+        {
+            "name": "deleteauth",
+            "base": "",
+            "fields": [
+                {
+                    "name": "account",
+                    "type": "name"
+                },
+                {
+                    "name": "permission",
+                    "type": "name"
+                }
+            ]
+        },
+        {
+            "name": "entity",
+            "base": "",
+            "fields": [
+                {
+                    "name": "name",
+                    "type": "name"
+                },
+                {
+                    "name": "type",
+                    "type": "uint64"
+                },
+                {
+                    "name": "info",
+                    "type": "string"
+                },
+                {
+                    "name": "ext_info",
+                    "type": "string"
+                }
+            ]
+        },
+        {
+            "name": "key_weight",
+            "base": "",
+            "fields": [
+                {
+                    "name": "key",
+                    "type": "public_key"
+                },
+                {
+                    "name": "weight",
+                    "type": "uint16"
+                }
+            ]
+        },
+        {
+            "name": "linkauth",
+            "base": "",
+            "fields": [
+                {
+                    "name": "account",
+                    "type": "name"
+                },
+                {
+                    "name": "code",
+                    "type": "name"
+                },
+                {
+                    "name": "type",
+                    "type": "name"
+                },
+                {
+                    "name": "requirement",
+                    "type": "name"
+                }
+            ]
+        },
+        {
+            "name": "netaddgroup",
+            "base": "",
+            "fields": [
+                {
+                    "name": "name",
+                    "type": "name"
+                },
+                {
+                    "name": "nodes",
+                    "type": "name[]"
+                }
+            ]
+        },
+        {
+            "name": "netgroup",
+            "base": "",
+            "fields": [
+                {
+                    "name": "name",
+                    "type": "name"
+                },
+                {
+                    "name": "nodes",
+                    "type": "name[]"
+                }
+            ]
+        },
+        {
+            "name": "netrmgroup",
+            "base": "",
+            "fields": [
+                {
+                    "name": "name",
+                    "type": "name"
+                }
+            ]
+        },
+        {
+            "name": "netsetgroup",
+            "base": "",
+            "fields": [
+                {
+                    "name": "node",
+                    "type": "name"
+                },
+                {
+                    "name": "groups",
+                    "type": "name[]"
+                }
+            ]
+        },
+        {
+            "name": "newaccount",
+            "base": "",
+            "fields": [
+                {
+                    "name": "creator",
+                    "type": "name"
+                },
+                {
+                    "name": "name",
+                    "type": "name"
+                },
+                {
+                    "name": "owner",
+                    "type": "authority"
+                },
+                {
+                    "name": "active",
+                    "type": "authority"
+                }
+            ]
+        },
+        {
+            "name": "node",
+            "base": "",
+            "fields": [
+                {
+                    "name": "name",
+                    "type": "name"
+                },
+                {
+                    "name": "entity",
+                    "type": "name"
+                },
+                {
+                    "name": "type",
+                    "type": "int32"
+                },
+                {
+                    "name": "bsa",
+                    "type": "bsa?"
+                },
+                {
+                    "name": "info",
+                    "type": "string"
+                },
+                {
+                    "name": "ext_info",
+                    "type": "string"
+                },
+                {
+                    "name": "net_groups",
+                    "type": "name[]"
+                },
+                {
+                    "name": "reserved",
+                    "type": "uint64"
+                }
+            ]
+        },
+        {
+            "name": "onblock",
+            "base": "",
+            "fields": [
+                {
+                    "name": "bh",
+                    "type": "block_header"
+                }
+            ]
+        },
+        {
+            "name": "onerror",
+            "base": "",
+            "fields": [
+                {
+                    "name": "sender_id",
+                    "type": "uint128"
+                },
+                {
+                    "name": "sent_trx",
+                    "type": "bytes"
+                }
+            ]
+        },
+        {
+            "name": "permission_level",
+            "base": "",
+            "fields": [
+                {
+                    "name": "actor",
+                    "type": "name"
+                },
+                {
+                    "name": "permission",
+                    "type": "name"
+                }
+            ]
+        },
+        {
+            "name": "permission_level_weight",
+            "base": "",
+            "fields": [
+                {
+                    "name": "permission",
+                    "type": "permission_level"
+                },
+                {
+                    "name": "weight",
+                    "type": "uint16"
+                }
+            ]
+        },
+        {
+            "name": "producer_key",
+            "base": "",
+            "fields": [
+                {
+                    "name": "producer_name",
+                    "type": "name"
+                },
+                {
+                    "name": "block_signing_key",
+                    "type": "public_key"
+                }
+            ]
+        },
+        {
+            "name": "producer_schedule",
+            "base": "",
+            "fields": [
+                {
+                    "name": "version",
+                    "type": "uint32"
+                },
+                {
+                    "name": "producers",
+                    "type": "producer_key[]"
+                }
+            ]
+        },
+        {
+            "name": "reindex",
+            "base": "",
+            "fields": []
+        },
+        {
+            "name": "reqactivated",
+            "base": "",
+            "fields": [
+                {
+                    "name": "feature_digest",
+                    "type": "checksum256"
+                }
+            ]
+        },
+        {
+            "name": "reqauth",
+            "base": "",
+            "fields": [
+                {
+                    "name": "from",
+                    "type": "name"
+                }
+            ]
+        },
+        {
+            "name": "rmentity",
+            "base": "",
+            "fields": [
+                {
+                    "name": "entity_name",
+                    "type": "name"
+                }
+            ]
+        },
+        {
+            "name": "rmnode",
+            "base": "",
+            "fields": [
+                {
+                    "name": "node_name",
+                    "type": "name"
+                }
+            ]
+        },
+        {
+            "name": "setabi",
+            "base": "",
+            "fields": [
+                {
+                    "name": "account",
+                    "type": "name"
+                },
+                {
+                    "name": "abi",
+                    "type": "bytes"
+                }
+            ]
+        },
+        {
+            "name": "setalimits",
+            "base": "",
+            "fields": [
+                {
+                    "name": "account",
+                    "type": "name"
+                },
+                {
+                    "name": "ram_bytes",
+                    "type": "int64"
+                },
+                {
+                    "name": "net_weight",
+                    "type": "int64"
+                },
+                {
+                    "name": "cpu_weight",
+                    "type": "int64"
+                }
+            ]
+        },
+        {
+            "name": "setcode",
+            "base": "",
+            "fields": [
+                {
+                    "name": "account",
+                    "type": "name"
+                },
+                {
+                    "name": "vmtype",
+                    "type": "uint8"
+                },
+                {
+                    "name": "vmversion",
+                    "type": "uint8"
+                },
+                {
+                    "name": "code",
+                    "type": "bytes"
+                }
+            ]
+        },
+        {
+            "name": "setentinfo",
+            "base": "",
+            "fields": [
+                {
+                    "name": "entity",
+                    "type": "name"
+                },
+                {
+                    "name": "info",
+                    "type": "string"
+                }
+            ]
+        },
+        {
+            "name": "setentxinfo",
+            "base": "",
+            "fields": [
+                {
+                    "name": "entity",
+                    "type": "name"
+                },
+                {
+                    "name": "info",
+                    "type": "string"
+                }
+            ]
+        },
+        {
+            "name": "setnodeinfo",
+            "base": "",
+            "fields": [
+                {
+                    "name": "node",
+                    "type": "name"
+                },
+                {
+                    "name": "info",
+                    "type": "string"
+                }
+            ]
+        },
+        {
+            "name": "setnodexinfo",
+            "base": "",
+            "fields": [
+                {
+                    "name": "node",
+                    "type": "name"
+                },
+                {
+                    "name": "ext_info",
+                    "type": "string"
+                }
+            ]
+        },
+        {
+            "name": "setparams",
+            "base": "",
+            "fields": [
+                {
+                    "name": "params",
+                    "type": "blockchain_parameters"
+                }
+            ]
+        },
+        {
+            "name": "setpriv",
+            "base": "",
+            "fields": [
+                {
+                    "name": "account",
+                    "type": "name"
+                },
+                {
+                    "name": "is_priv",
+                    "type": "uint8"
+                }
+            ]
+        },
+        {
+            "name": "setram",
+            "base": "",
+            "fields": [
+                {
+                    "name": "entity",
+                    "type": "name"
+                },
+                {
+                    "name": "account",
+                    "type": "name"
+                },
+                {
+                    "name": "ram_bytes",
+                    "type": "int64"
+                }
+            ]
+        },
+        {
+            "name": "setschedule",
+            "base": "",
+            "fields": [
+                {
+                    "name": "validators",
+                    "type": "name[]"
+                }
+            ]
+        },
+        {
+            "name": "unlinkauth",
+            "base": "",
+            "fields": [
+                {
+                    "name": "account",
+                    "type": "name"
+                },
+                {
+                    "name": "code",
+                    "type": "name"
+                },
+                {
+                    "name": "type",
+                    "type": "name"
+                }
+            ]
+        },
+        {
+            "name": "updateauth",
+            "base": "",
+            "fields": [
+                {
+                    "name": "account",
+                    "type": "name"
+                },
+                {
+                    "name": "permission",
+                    "type": "name"
+                },
+                {
+                    "name": "parent",
+                    "type": "name"
+                },
+                {
+                    "name": "auth",
+                    "type": "authority"
+                }
+            ]
+        },
+        {
+            "name": "wait_weight",
+            "base": "",
+            "fields": [
+                {
+                    "name": "wait_sec",
+                    "type": "uint32"
+                },
+                {
+                    "name": "weight",
+                    "type": "uint16"
+                }
+            ]
+        },
+        {
+            "name": "writers",
+            "base": "",
+            "fields": [
+                {
+                    "name": "id",
+                    "type": "uint64"
+                },
+                {
+                    "name": "writers",
+                    "type": "permission_level_weight[]"
+                },
+                {
+                    "name": "reserved",
+                    "type": "uint64"
+                }
+            ]
+        }
+    ],
+    "actions": [
+        {
+            "name": "activate",
+            "type": "activate",
+            "ricardian_contract": "---\nspec_version: \"0.2.0\"\ntitle: Activate Protocol Feature\nsummary: 'Activate protocol feature {{nowrap feature_digest}}'\nicon: @ICON_BASE_URL@/@ADMIN_ICON_URI@\n---\n\n{{$action.account}} activates the protocol feature with a digest of {{feature_digest}}."
+        },
+        {
+            "name": "addboot",
+            "type": "addboot",
+            "ricardian_contract": ""
+        },
+        {
+            "name": "addentity",
+            "type": "addentity",
+            "ricardian_contract": ""
+        },
+        {
+            "name": "addobserver",
+            "type": "addobserver",
+            "ricardian_contract": ""
+        },
+        {
+            "name": "addvalidator",
+            "type": "addvalidator",
+            "ricardian_contract": ""
+        },
+        {
+            "name": "addwriter",
+            "type": "addwriter",
+            "ricardian_contract": ""
+        },
+        {
+            "name": "canceldelay",
+            "type": "canceldelay",
+            "ricardian_contract": "---\nspec_version: \"0.2.0\"\ntitle: Cancel Delayed Transaction\nsummary: '{{nowrap canceling_auth.actor}} cancels a delayed transaction'\nicon: @ICON_BASE_URL@/@ACCOUNT_ICON_URI@\n---\n\n{{canceling_auth.actor}} cancels the delayed transaction with id {{trx_id}}."
+        },
+        {
+            "name": "deleteauth",
+            "type": "deleteauth",
+            "ricardian_contract": "---\nspec_version: \"0.2.0\"\ntitle: Delete Account Permission\nsummary: 'Delete the {{nowrap permission}} permission of {{nowrap account}}'\nicon: @ICON_BASE_URL@/@ACCOUNT_ICON_URI@\n---\n\nDelete the {{permission}} permission of {{account}}."
+        },
+        {
+            "name": "linkauth",
+            "type": "linkauth",
+            "ricardian_contract": "---\nspec_version: \"0.2.0\"\ntitle: Link Action to Permission\nsummary: '{{nowrap account}} sets the minimum required permission for the {{#if type}}{{nowrap type}} action of the{{/if}} {{nowrap code}} contract to {{nowrap requirement}}'\nicon: @ICON_BASE_URL@/@ACCOUNT_ICON_URI@\n---\n\n{{account}} sets the minimum required permission for the {{#if type}}{{type}} action of the{{/if}} {{code}} contract to {{requirement}}.\n\n{{#if type}}{{else}}Any links explicitly associated to specific actions of {{code}} will take precedence.{{/if}}"
+        },
+        {
+            "name": "netaddgroup",
+            "type": "netaddgroup",
+            "ricardian_contract": ""
+        },
+        {
+            "name": "netrmgroup",
+            "type": "netrmgroup",
+            "ricardian_contract": ""
+        },
+        {
+            "name": "netsetgroup",
+            "type": "netsetgroup",
+            "ricardian_contract": ""
+        },
+        {
+            "name": "newaccount",
+            "type": "newaccount",
+            "ricardian_contract": "---\nspec_version: \"0.2.0\"\ntitle: Create New Account\nsummary: '{{nowrap creator}} creates a new account with the name {{nowrap name}}'\nicon: @ICON_BASE_URL@/@ACCOUNT_ICON_URI@\n---\n\n{{creator}} creates a new account with the name {{name}} and the following permissions:\n\nowner permission with authority:\n{{to_json owner}}\n\nactive permission with authority:\n{{to_json active}}"
+        },
+        {
+            "name": "onblock",
+            "type": "onblock",
+            "ricardian_contract": ""
+        },
+        {
+            "name": "onerror",
+            "type": "onerror",
+            "ricardian_contract": ""
+        },
+        {
+            "name": "reindex",
+            "type": "reindex",
+            "ricardian_contract": ""
+        },
+        {
+            "name": "reqactivated",
+            "type": "reqactivated",
+            "ricardian_contract": "---\nspec_version: \"0.2.0\"\ntitle: Assert Protocol Feature Activation\nsummary: 'Assert that protocol feature {{nowrap feature_digest}} has been activated'\nicon: @ICON_BASE_URL@/@ADMIN_ICON_URI@\n---\n\nAssert that the protocol feature with a digest of {{feature_digest}} has been activated."
+        },
+        {
+            "name": "reqauth",
+            "type": "reqauth",
+            "ricardian_contract": "---\nspec_version: \"0.2.0\"\ntitle: Assert Authorization\nsummary: 'Assert that authorization by {{nowrap from}} is provided'\nicon: @ICON_BASE_URL@/@ACCOUNT_ICON_URI@\n---\n\nAssert that authorization by {{from}} is provided."
+        },
+        {
+            "name": "rmentity",
+            "type": "rmentity",
+            "ricardian_contract": ""
+        },
+        {
+            "name": "rmnode",
+            "type": "rmnode",
+            "ricardian_contract": ""
+        },
+        {
+            "name": "setabi",
+            "type": "setabi",
+            "ricardian_contract": "---\nspec_version: \"0.2.0\"\ntitle: Deploy Contract ABI\nsummary: 'Deploy contract ABI on account {{nowrap account}}'\nicon: @ICON_BASE_URL@/@ACCOUNT_ICON_URI@\n---\n\nDeploy the ABI file associated with the contract on account {{account}}."
+        },
+        {
+            "name": "setalimits",
+            "type": "setalimits",
+            "ricardian_contract": "---\nspec_version: \"0.2.0\"\ntitle: Adjust Resource Limits of Account\nsummary: 'Adjust resource limits of account {{nowrap account}}'\nicon: @ICON_BASE_URL@/@ADMIN_ICON_URI@\n---\n\n{{$action.account}} updates {{account}}’s resource limits to have a RAM quota of {{ram_bytes}} bytes, a NET bandwidth quota of {{net_weight}} and a CPU bandwidth quota of {{cpu_weight}}."
+        },
+        {
+            "name": "setcode",
+            "type": "setcode",
+            "ricardian_contract": "---\nspec_version: \"0.2.0\"\ntitle: Deploy Contract Code\nsummary: 'Deploy contract code on account {{nowrap account}}'\nicon: @ICON_BASE_URL@/@ACCOUNT_ICON_URI@\n---\n\nDeploy compiled contract code to the account {{account}}."
+        },
+        {
+            "name": "setentinfo",
+            "type": "setentinfo",
+            "ricardian_contract": ""
+        },
+        {
+            "name": "setentxinfo",
+            "type": "setentxinfo",
+            "ricardian_contract": ""
+        },
+        {
+            "name": "setnodeinfo",
+            "type": "setnodeinfo",
+            "ricardian_contract": ""
+        },
+        {
+            "name": "setnodexinfo",
+            "type": "setnodexinfo",
+            "ricardian_contract": ""
+        },
+        {
+            "name": "setparams",
+            "type": "setparams",
+            "ricardian_contract": "---\nspec_version: \"0.2.0\"\ntitle: Set System Parameters\nsummary: 'Set system parameters'\nicon: @ICON_BASE_URL@/@ADMIN_ICON_URI@\n---\n\n{{$action.account}} sets system parameters to:\n{{to_json params}}"
+        },
+        {
+            "name": "setpriv",
+            "type": "setpriv",
+            "ricardian_contract": "---\nspec_version: \"0.2.0\"\ntitle: Make an Account Privileged or Unprivileged\nsummary: '{{#if is_priv}}Make {{nowrap account}} privileged{{else}}Remove privileged status of {{nowrap account}}{{/if}}'\nicon: @ICON_BASE_URL@/@ADMIN_ICON_URI@\n---\n\n{{#if is_priv}}\n{{$action.account}} makes {{account}} privileged.\n{{else}}\n{{$action.account}} removes privileged status of {{account}}.\n{{/if}}"
+        },
+        {
+            "name": "setram",
+            "type": "setram",
+            "ricardian_contract": ""
+        },
+        {
+            "name": "setschedule",
+            "type": "setschedule",
+            "ricardian_contract": ""
+        },
+        {
+            "name": "unlinkauth",
+            "type": "unlinkauth",
+            "ricardian_contract": "---\nspec_version: \"0.2.0\"\ntitle: Unlink Action from Permission\nsummary: '{{nowrap account}} unsets the minimum required permission for the {{#if type}}{{nowrap type}} action of the{{/if}} {{nowrap code}} contract'\nicon: @ICON_BASE_URL@/@ACCOUNT_ICON_URI@\n---\n\n{{account}} removes the association between the {{#if type}}{{type}} action of the{{/if}} {{code}} contract and its minimum required permission.\n\n{{#if type}}{{else}}This will not remove any links explicitly associated to specific actions of {{code}}.{{/if}}"
+        },
+        {
+            "name": "updateauth",
+            "type": "updateauth",
+            "ricardian_contract": "---\nspec_version: \"0.2.0\"\ntitle: Modify Account Permission\nsummary: 'Add or update the {{nowrap permission}} permission of {{nowrap account}}'\nicon: @ICON_BASE_URL@/@ACCOUNT_ICON_URI@\n---\n\nModify, and create if necessary, the {{permission}} permission of {{account}} to have a parent permission of {{parent}} and the following authority:\n{{to_json auth}}"
+        }
+    ],
+    "tables": [
+        {
+            "name": "abihash",
+            "type": "abi_hash",
+            "index_type": "i64",
+            "key_names": [],
+            "key_types": []
+        },
+        {
+            "name": "entity",
+            "type": "entity",
+            "index_type": "i64",
+            "key_names": [],
+            "key_types": []
+        },
+        {
+            "name": "netgroup",
+            "type": "netgroup",
+            "index_type": "i64",
+            "key_names": [],
+            "key_types": []
+        },
+        {
+            "name": "node",
+            "type": "node",
+            "index_type": "i64",
+            "key_names": [],
+            "key_types": []
+        },
+        {
+            "name": "writers",
+            "type": "writers",
+            "index_type": "i64",
+            "key_names": [],
+            "key_types": []
+        }
+    ],
+    "ricardian_clauses": [
+        {
+            "id": "VALIDATOR NODE AGREEMENT",
+            "body": "PLEASE READ THESE TERMS AND CONDITIONS OF USE (THIS “AGREEMENT”) CAREFULLY. IT IS A LEGAL AND BINDING CONTRACT BETWEEN YOU AND THE INTER-AMERICAN DEVELOPMENT BANK (“IDB”). THIS AGREEMENT APPLIES TO USE THE LACCHAIN TEST NETWORK AND THE CAPABILITIES AND INFORMATION MADE AVAILABLE TO YOU THROUGH ITS USE. BY CONTINUING WITH THE INSTALLATION PROCESS, YOU AGREE THAT YOU UNDERSTAND THIS AGREEMENT AND AGREE TO BE BOUND BY IT IN ITS ENTIRETY. IF YOU ARE REGISTERING TO USE THE LACCHAIN TEST NETWORK ON BEHALF OF AN ORGANIZATION OR OTHER LEGAL ENTITY, YOU REPRESENT THAT YOU HAVE THE AUTHORITY TO BIND THE LEGAL ENTITY, AND THAT THE LEGAL ENTITY IS DULY ORGANIZED, VALIDLY EXISTING AND IN GOOD STANDING. YOU FURTHER AGREE THAT THE LEGAL ENTITY WILL BE BOUND BY AND RESPONSIBLE FOR ANY BREACH OF THIS AGREEMENT. IF YOU DO NOT AGREE WITH ANY OF THE TERMS OF THIS AGREEMENT, YOU MUST IMMEDIATELY DISCONTINUE YOUR USE OF THE LACCHAIN TEST NETWORKS.  \n\nLACCHAIN TEST NETWORK (\"LACCHAIN TEST NETWORK\") is a blockchain test network established by the IDB. The IDB is an international organization established by its member countries pursuant to the Agreement Establishing the Inter-American Development Bank. The purpose of the IDB is to further the economic and social development of Latin America and the Caribbean. The LACCHAIN TEST NETWORK provide services that enable the entity operating a validator node to participate in the consensus protocol of the network.  The LACCHAIN TEST NETWORK is for the benefit of users who have registered on the LACCHAIN TEST NETWORK (“Users”). Users will have access to and use of facilities of the LACCHAIN TEST NETWORK. Upon your agreement to this Agreement and the acceptance by IDB of your registration (“Registration”), you will become a User for the purpose of this Agreement. The LACCHAIN TEST NETWORK seek to provide infrastructure services for testing deployment of proof-of-concept use cases or testing applications using blockchain technologies.\n\n<h2 class=\"clause\">Lacchain Test Networks Registration</h2>\nIn order to access the full functionality of the LACCHAIN TEST NETWORK, you must register as a User through any means offered on the LACCHAIN TEST NETWORK. As part of the registration process to became a user, you are required to (i) be a partner of the IDB for the LACChain program, (ii) identify a contact person in your organization to be responsible for the administration of the node that can be reachable for any technical issue, (iii) identify a contact person for communications of general purpose between the IDB and the User, (iv) indicate if any entity other than the User will have access to the User’s validator node. If your registration is accepted, you will be assigned a user identification code (\"User Identification\"). You will have access to various Content and system resources associated with your User Identification as determined by IDB in its sole discretion, which may include designated directories, designated contact person, web pages, e-mail or other capabilities, information storage, and/or types of transactional data to be sent to the network, and which may be changed, terminated, increased or decreased by IDB, at its sole discretion, from time to time. The use of pseudonyms, aliases or other devices to conceal your identity is strictly forbidden and grounds for the immediate termination of the authorization of your User Identification. You also acknowledge that you solely assume any and all liability for any Content that is provided using your User Identification. You are solely responsible for the activity that occurs through your User Identification, including the transactions you accept and reject, and you must keep your User Identification passwords secure. You shall notify IDB immediately of any breach of security or unauthorized use of your User Identification. You shall not use any User Identification without the permission of the relevant User. Although IDB will not be liable for your losses caused by any unauthorized use of your User Identification, you may be liable for the losses of IDB or others due to such unauthorized use. IDB will notify users about any personal information data security breach or intrusion made by third parties.  \nThe LACCHAIN TEST NETWORK and the Services are provided for professional use only and in registering as a User, you acknowledge that the Services and any Content may not be used for personal, family, or household purposes.  \nThe LACCHAIN TEST NETWORK and the Services are provided by IDB for free and solely as an accommodation. IDB reserves the right to discontinue the LACCHAIN TEST NETWORK and the Services, in whole or in part, to accept or deny any Registration, and to terminate any Registration and its associated User Identification, at any time in its sole discretion for any reason or no reason.  \n\n<h2 class=\"clause\">Consensus Protocol And Transactional Data</h2>\nValidator nodes are required to participate in the consensus protocol of the LACCHAIN TEST NETWORK and must not veto or blacklist any transaction or transactional data sent by any other node except if it is believed that the transaction or transactional data might be violating the Terms and Conditions for LACChain Test Networks for Writer Nodes or the Terms and Conditions for LACChain Test Networks for Validator Nodes. If you decide to reject a transaction, you must immediately communicate it to the IDB via email from one of the contact persons designated within your entity.  \n\nValidator nodes are not allowed to generate any transactional data to be sent to the LACCHAIN TEST NETWORK.\n\n<h2 class=\"clause\">Data Provided To The Lacchain Test Network</h2>\nYou will provide data or information about the administration, operation and performance of your node in connection to the LACCHAIN TEST NETWORK. You will provide information about the entities and point of contacts directly responsible for your node. You will provide information about the activity of your node, including performance and the transactions from third parties accepted or rejected. You hereby grant to IDB a nonexclusive, irrevocable, worldwide, perpetual, assignable, sublicensable, transferable, royalty-free right to copy, prepare derivative works, distribute, transmit, display, publish, retain, translate, analyze, and use (including alone and in collective works), in any way now known or in the future discovered, any  data or information you provide directly or indirectly in connection with the administration, operation and performance of your validator node, and to publish your name in connection with these data and information, without any further consent of or notice to you or to any third party. All of the foregoing rights are referred to as the “License”. The License includes the right of IDB to authorize Users and other third parties on a royalty-free basis to copy, distribute, and otherwise exploit these data, including the right of Users and such other third parties to authorize the same. Unless you have a separate written agreement with IDB to provide services to IDB for compensation, no compensation will be paid to you or any third party with respect to the use of the data and information in connection with the administration, operation and performance of your validator node and the License as provided herein.  \n\nYou understand and agree that IDB may, but has no obligation to, monitor, review, evaluate, edit, filter or validate any Content. IDB also has no obligation to verify the identity of the persons who register on the LACCHAIN TEST NETWORK or to monitor the use of the Services. IDB will not be a party to or in any way be responsible for monitoring any activity of your validator node. IDB reserves the right to deny, restrict, suspend or terminate your access to all or any part of the LACCHAIN TEST NETWORK or the Services at any time, if IDB suspects that this terms of reference might have been violated, with or without prior notice or explanation, and without liability. For avoidance of doubt, IDB has no obligation to store, maintain or provide you a copy of any Content or Submission that you or other Users provide when using the Services, whether during the term of your Registration or upon or after its termination. You are solely responsible for making backup copies of the transactional data and any electronic communications sent or received by you using the Services.\n\n<h2 class=\"clause\">Information, Feedback And Confidentiality</h2>\nLACCHAIN TEST NETWORK, any information relating to the testing progress and results, the Feedback, any product-related information and any other proprietary technology or know-how provided to you in whatever form by IDB in connection with testing and evaluation of LACCHAIN TEST NETWORK is considered confidential (\"Confidential Information\"). \nYou will keep, and ensure that any persons, firms, companies or organizations associated with you keep all Confidential Information confidential and not disclose it to any person unless permitted under this clause. This confidentiality obligation does not apply to the disclosure of Confidential Information which: (a) is or comes into public domain, except through breach of the confidentiality obligation under this clause; (b) comes lawfully into your possession from a third party who is not bound by a confidentiality obligation relating to such Confidential Information; (c) is required to be disclosed by any court of competent jurisdiction or any competent judicial, governmental, supervisory or regulatory body, or any law, provided that you will promptly notify IDB in writing; or (d) is disclosed by you with IDB prior written consent. \nUNDER NO CIRCUMSTANCES MAY ANY INFORMATION ABOUT THE TESTING PROGRESS AND/OR RESULTS BE PROVIDED TO PERSONS THAT ARE NOT INVOLVED IN THE TESTING PROCESS. ANY PUBLICATION OF TESTING RESULTS, REVIEWS OR EVALUATIONS IS ONLY PERMITTED WITH THE PRIOR WRITTEN CONSENT OF THE IDB.  \nYou will give IDB Feedback about LACCHAIN TEST NETWORK consisting of, without limitation, your suggestions, comments or any other feedback, whether it is required or provided voluntarily. If you provide IDB with any Feedback, as part of the testing and evaluation of LACCHAIN TEST NETWORK, you agree that: (a) IDB may freely use, disclose, reproduce, license, distribute and otherwise commercialize the Feedback in any product, specification or other documentation; and (b) you will not give IDB any Feedback (i) that you have reason to believe is subject to any patent, copyright, or other intellectual property claim or right of any third party; or (ii) that is subject to license terms that seek to require any IDB product incorporating or derived from any Feedback, or other IDB intellectual property, to be licensed to or otherwise shared with any third party; and (iii) no compensation will be paid to you or any third party with respect to the provision of feedback.\n\n<h2 class=\"clause\">Liability</h2>\nIDB reserves its rights to unilaterally deny or revoke access to the LACCHAIN TEST NETWORK.  A list of prohibited activities in included as annex A. You are providing information on a contact person responsible for the use on the validator node in your entity. Should the User intend to make any changes related to the contact persons, the third parties using the validator node or any other matter that affects these Terms and Conditions, it must be communicated to and approved by the IDB.  \n\nAS SERVICE CONTINUITY OF VALIDATOR NODES IS ESSENTIAL FOR THE STABILITY OF THE LACCHAIN TEST NETWORK, IF YOU PLAN TO DISCONNECT YOUR VALIDATOR NODE YOU ARE REQUIRED TO NOTIFY WITH AT LEAST FIVE (5) LABOR DAYS VIA EMAIL FROM ONE OF THE CONTACT PERSONS DESIGNATED BY YOUR ENTITY TO MARCOSAL@IADB.ORG AND ALEJANDROPA@IADB.ORG.  \nYOU WILL BE ENTIRELY RESPONSIBLE FOR THE OPERATION OF THE VALIDATOR NODE AND THE USE OF LACCHAIN INFRASTRUCTURE. UNDER NO CIRCUMSTANCE YOU WILL TRANSFER OR DELEGATE RESPONSIBILITY TO OTHERS. IF THE USER DESIRES TO ALLOW ANY THIRD PARTY TO USE THEIR VALIDATOR NODE, THE USER (I) MUST NOTIFY THE IDB, (II) MUST BE AUTHORIZED BY THE IDB, AND (III) WILL TAKE FULL RESPONSIBILITY FOR ANY USE OF THEIR VALIDATOR NODE BY THE THIRD PARTY.  \nYou, as an operator of a validator node, are not responsible for any data or transactions sent to the network by any other node even if that information might violate the Terms and Conditions for LACChain Test Networks for Writer Nodes or the Terms and Conditions for LACChain Test Networks for Validator Nodes except if you have contributed, or are involved or related directly or indirectly to those transactions or the node that generated them.  \n\nTO THE FULLEST EXTENT PERMITTED BY APPLICABLE LAW, IDB, FOR ITSELF AND ITS AFFILIATES, HEREBY DISCLAIMS ANY AND ALL WARRANTIES WITH RESPECT TO ANY AND ALL CONTENT, FEATURES AND FUNCTIONS MADE AVAILABLE ON OR THROUGH THE LACCHAIN TEST NETWORK, INCLUDING WITHOUT LIMITATION ANY AND ALL WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, TITLE, ACCURACY OF DATA AND NONINFRINGEMENT. THE LACCHAIN TEST NETWORK IS PROVIDED ON AN “AS IS” AND “AS AVAILABLE” BASIS. IDB IS NOT RESPONSIBLE FOR AND MAKES NO REPRESENTATIONS OR WARRANTIES WITH RESPECT TO, DELIVERY, INTEGRITY OR VISIBILITY TO THIRD PARTIES OF ANY MESSAGES OR OTHER INFORMATION SENT THROUGH THE LACCHAIN TEST NETWORKS TO ANYONE. IDB AND ITS AFFILIATES ARE NOT RESPONSIBLE FOR AND DO NOT WARRANT, GUARANTEE, RECOMMEND, OR ENDORSE, AS APPLICABLE (i) THE ACCURACY, QUALITY OR EFFECTIVENESS OF ANY CONTENT, INCLUDING ANY SUBMISSION BY ANY USER, (ii) ANY TRANSLATION OF ORIGINAL CONTENT, (iii) THE SUCCESS OF ANY PROJECT OR COLLABORATION WITH ANOTHER USER OR OTHER THIRD PARTY THAT MAY RESULT FROM A SUBMISSION OR FROM INTERACTIONS WITH OTHER USERS OR THIRD PARTIES, or (iv) THAT THE LACCHAIN TEST NETWORK OR THE SERVICES WILL FUNCTION WITHOUT INTERRUPTION OR ERRORS IN FUNCTIONING. IN PARTICULAR, THE OPERATION OF THE LACCHAIN TEST NETWORK AND THE SERVICES MAY BE INTERRUPTED DUE TO MAINTENANCE, UPDATES, OR SYSTEM OR NETWORK FAILURES. IDB DISCLAIMS ANY AND ALL LIABILITY FOR DAMAGES CAUSED BY ANY SUCH INTERRUPTION OR ERRORS IN FUNCTIONING.  \nIDB EXPRESSLY MANIFESTS THAT THE LACCHAIN TEST NETWORK IS NOT A FINAL SERVICE AND, AS SUCH, MAY PRODUCE OR CONTAIN VARIOUS ERRORS, DEFECTS AND THEY MAY BE UNSTABLE. WE DO NOT RECOMMEND INSTALLING OR USING LACCHAIN TEST NETWORK’S SOFTWARE AND PROTOCOLS OTHER THAN FOR TESTING PURPOSES. FURTHERMORE, WE DO NOT RECOMMEND USING THE LACCHAIN TEST NETWORK UNLESS YOU ARE AN EXPERIENCED USER.  \nIDB DOES NOT GUARANTEE TO PROVIDE ANY UPDATES TO LACCHAIN TEST NETWORK, ANY UPDATED MALWARE SIGNATURES OR ANY OTHER UPDATED CONTENT UTILIZED BY LACCHAIN TEST NETWORK (SUCH AS VIRUS AND SPYWARE DEFINITIONS, ANTI-SPAM RULES, URL LISTS, FIREWALL RULES, VULNERABILITY DATA OR LISTS OF AUTHENTICATED WEB PAGES) (\"UPDATES\"). HOWEVER, SHOULD IDB IN ITS SOLE DISCRETION PROVIDE YOU WITH ANY UPDATES, SUCH UPDATES WILL BE DEEMED TO FORM PART OF LACCHAIN TEST NETWORKS FOR ALL PURPOSES UNDER THESE USER TERMS AND CONDITIONS UNLESS OTHER TERMS OF USE ARE PROVIDED BY IDB IN CONNECTION WITH SUCH UPDATES.  \n\nNO CONTENT OR OTHER MATERIALS OR INFORMATION ON OR ACCESSIBLE THROUGH THE LACCHAIN TEST NETWORK OR THE USE OF THE SERVICES IS INTENDED TO BE NOR SHALL BE DEEMED TO BE A SOLICITATION TO SELL OR AN OFFER TO BUY SECURITIES BY OR ON BEHALF OF IDB OR ANY OTHER PERSON OR ENTITY. TO THE EXTENT THAT THE LACCHAIN TEST NETWORK LINKS TO A WEB SITE THAT FACILITATES SUCH SOLICITATION, SUCH LINK IS PROVIDED FOR THE CONVENIENCE OF THE USER AND DOES NOT REPRESENT THE ENDORSEMENT OF ANY OFFER OR SOLICITATION MADE OR FACILITATED BY OR THROUGH SUCH LINKED WEB SITE.\n\n<h2 class=\"clause\">Use Of Services</h2>\nYou are responsible for all your activity on the LACCHAIN TEST NETWORK and shall abide by all applicable local, state, national and foreign laws, treaties and regulations in connection with your use of the Services, including those related to data privacy, international communications and the transmission of technical, financial or personal data. You shall: (a) notify IDB immediately of any unauthorized use of your User Identification, your validator node, any password, or any of your Registration information, or any other known or suspected breach of security; and (b) report to IDB immediately and use reasonable efforts to stop immediately any copying or distribution of Content that is known or suspected by you to infringe the intellectual property rights of any other third party or is otherwise illegal, inappropriate and/or in violation of any provision of this Agreement.  \nYou agree to only make Submissions and to otherwise post, send and receive information that is proper and related to the Services. By way of example, and not as a limitation, you agree that when using the Services, you will not:  \n1.  alter or modify any part of the LACCHAIN TEST NETWORK, the Services or any of the related technologies;  \n2.\tdefame, abuse, harass, stalk, threaten or otherwise violate the legal rights (such as rights of privacy and publicity) of others;  \n3.\tpublish, post, upload, distribute or disseminate any false, misleading, inappropriate, profane, defamatory, infringing, libelous, obscene, indecent or unlawful topic, name, material or information;  \n4.\tduplicate, license, sublicense, publish, broadcast, transmit, distribute, perform, display, sell, rebrand or otherwise transfer information or Content found on the LACCHAIN TEST NETWORK (excluding Submissions from you) except as expressly permitted by this Agreement;  \n5.\tupload files that contain software or other material protected by intellectual property laws (or by rights of privacy or publicity) unless you own or control the rights thereto or have received all necessary consents;  \n6.\tupload files that contain viruses, corrupted files, or any other similar software or programs that may damage the operation of another's computer;  \n7.\tadvertise or offer to sell or buy any goods or services for any business purpose, unless the Services specifically allow such messages, in which you case you may do so only in accordance with any additional terms and conditions applicable to such messages;  \n8.\tconduct or forward surveys, contests, pyramid schemes, chain letters or the like;  \n9.\tdownload any file posted by another User that you know, or reasonably should know, cannot be legally distributed in such manner;  \n10.\tfalsify or delete any author attributions, legal or other notices or proprietary designations or labels of the origin or source of software, Content or other material contained in a file that is uploaded;  \n11.\tuse any alias, pseudonym (other than a trade name that is not misleading), or means of concealing the sender or recipient of any electronic communication made by you using the capabilities of the LACCHAIN TEST NETWORK or made by you to any other person;  \n12.\tdamage, disable, restrict or inhibit any other User from using and enjoying the Services;  \n13.\tviolate any code of conduct or other guidelines which may be applicable for any particular Service, including IDB guidelines in respect of prohibited practices;  \n14.\tharvest or otherwise collect information about others, including e-mail addresses, without their consent;  \n15.\tviolate any applicable laws or regulations;  \n16.\treverse engineer, decompile, disassemble, decipher, or otherwise attempt to derive the source code for any underlying intellectual property used to provide the Services or any part thereof; or  \n17.\tcircumvent, disable or otherwise interfere with security-related features of the LACCHAIN TEST NETWORK or features, such as those that prevent or restrict use or copying of any Content, or that enforce limitations on use of the LACCHAIN TEST NETWORK or the Content therein.  \nAs a condition of your use of the LACCHAIN TEST NETWORK, you represent and warrant to IDB that you will not use the LACCHAIN TEST NETWORK for any purpose that is unlawful or prohibited by this Agreement. You may not obtain or attempt to obtain from IDB or the LACCHAIN TEST NETWORK any materials or information through any means not intentionally made available or provided for through the LACCHAIN TEST NETWORK.\n\n<h2 class=\"clause\">Intellectual Property Rights</h2>\nYou acknowledge and agree that the LACCHAIN TEST NETWORK and the Services include features and Content that are protected by copyright, patent, trademark, trade secret or other laws governing proprietary rights. IDB or its licensors own all rights, title and interest in and to the LACCHAIN TEST NETWORK, the Services, and all Content (other than your Submissions), software, code, data and other materials thereon, as well as the look-and-feel, design and organization of any aspect thereof. Your use of the LACCHAIN TEST NETWORK does not grant to you ownership or title of, in or to any Content or other material on the LACCHAIN TEST NETWORK, or the right to use the LACCHAIN TEST NETWORK or any of the Services for any purpose other than as expressly set forth in this Agreement. Without limiting the foregoing, the IDB, IDB Lab, Multilateral Investment Fund, LACChain Alliance and LACCHAIN TEST NETWORK names and logos, and the names associated with them and the Services are trademarks of IDB, and no right or license is granted to use them.\n\n<h2 class=\"clause\">Indemnity</h2>\nAs a condition of your use of the LACCHAIN TEST NETWORK and the Services, you agree to indemnify the IDB, its affiliates, and its and their respective partners, officers, directors, employees and agents, from and against any and all actions, claims, losses, damages, liabilities and expenses (including reasonable attorneys' fees) arising from: (i) your use of and access to the LACCHAIN TEST NETWORK and any of the Services, and any activity in which you engage in connection therewith, (ii) your violation of any term of this Agreement, including without limitation your violation of any third party copyright, property (including intellectual or industrial property), confidential information, privacy, contractual or other right, or (iii) any claim that one of your Submissions or any portion thereof caused damage to a third party. This indemnification obligation will survive termination of this Agreement and your use of the LACCHAIN TEST NETWORK.\n\n<h2 class=\"clause\">Privacy</h2>\nYou should carefully read our full Privacy Policy before using the LACCHAIN TEST NETWORK or any of the Services. The Privacy Policy, included in Annex B, governs IDB’s treatment of any information you submit to us, including personally identifiable information.\nYou acknowledge, consent and agree that IDB may access, preserve, and disclose your Registration and any other information you provide if required to do so by law or in a good faith belief that such access, preservation or disclosure is reasonably necessary in our opinion to: (1) comply with legal process, including, but not limited to, civil and criminal subpoenas, court orders or other compulsory disclosures; (2) enforce this Agreement; (3) respond to claims of a violation of any right of a third party, whether or not the third party is a User, individual, government agency or other legal entity; (4) respond to customer service inquiries; or (5) protect the rights, property, or personal safety of IDB, any User or the public.\n\n<h2 class=\"clause\">Procedure For Making Claims Of Copyright Infringement</h2>\nIDB respects the intellectual property rights of others. You may notify IDB in accordance with the following procedures if you believe that the content of any of your Submissions has been copied in an infringing manner. ANY INQUIRIES OR NOTICES NOT IN ACCORDANCE WITH THE FOLLOWING PROCEDURE WILL RECEIVE NO RESPONSE. \nIDB has implemented procedures for receiving written notification of claimed infringements, and has designated an officer to receive notices of claimed copyright infringement consistent with the requirements of the Digital Millennium Copyright Act (17 U.S.C. § 512). If you believe in good faith that your work has been copied in a way that constitutes copyright infringement, you may provide a written communication which contains the following: \n1.\tan electronic or physical signature of the person authorized to act on behalf of the owner of the copyright interest;  \n2.\ta description of the copyrighted work that you claim has been infringed;  \n3.\ta description of the location on the LACCHAIN TEST NETWORK of the material that you claim is infringing;  \n4.\tyour address, telephone number and e-mail address;  \n5.\ta statement by you that you have a good faith belief that the disputed use is not authorized by the copyright owner, its agent, or the law; and  \n6.\ta statement by you, made under penalty of perjury, that the information in your notice is accurate and that you are the copyright owner or authorized to act on the copyright owner’s behalf.  \nPlease submit your notice to IDB's copyright officer as follows:  \nAttn: Copyright Officer  \nRe: LACCHAIN TEST NETWORKS  \nInter-American Development Bank  \n1300 New York Avenue NW  \nWashington, D.C. 20577  \nStop [SW0374]\n\n<h2 class=\"clause\">Remedies And Disputes</h2>\nIN NO EVENT SHALL IDB BE LIABLE FOR ANY DIRECT, INDIRECT, PUNITIVE, INCIDENTAL, SPECIAL, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER INCLUDING, WITHOUT LIMITATION, DAMAGES FOR LOSS OF USE, DATA OR PROFITS, ARISING OUT OF OR IN ANY WAY CONNECTED WITH (i) THE USE OF THE LACCHAIN TEST NETWORK OR ANY OF THE SERVICES, (ii) THE DELAY OR INABILITY TO USE THE LACCHAIN TEST NETWORK OR ANY OF THE SERVICES, (iii) THE PROVISION OF OR FAILURE TO PROVIDE SERVICES, INFORMATION, SOFTWARE, PRODUCTS OR OTHER DATA OBTAINED THROUGH THE LACCHAIN TEST NETWORK, OR OTHERWISE ARISING OUT OF THE USE OF THE LACCHAIN TEST NETWORK OR THE SERVICES, WHETHER BASED ON CONTRACT, TORT, NEGLIGENCE, STRICT LIABILITY OR OTHERWISE, EVEN IF IDB OR ANY OF ITS SUPPLIERS OR CONTENT PROVIDERS HAS BEEN ADVISED OF THE POSSIBILITY OF DAMAGES. \nIF YOU ARE DISSATISFIED OR CONSIDER THAT ANY HARM MAY HAVE BEEN CAUSED BY OR ARISEN IN RELATION TO ANY PORTION OF THE LACCHAIN TEST NETWORK OR ITS ADMINISTRATION OR ANY OF THE SERVICES, YOU MAY TERMINATE YOUR USER IDENTIFICATION AND DISCONTINUE USING THE LACCHAIN TEST NETWORKS AND THE SERVICES, AND SUCH DISCONTINUANCE SHALL BE YOUR SOLE AND EXCLUSIVE REMEDY.  \n\nThis Agreement will be governed, interpreted and enforced in accordance with the laws of the District of Columbia, United States of America, without giving effect to the conflict of laws provisions of that jurisdiction. No waiver by IDB of any provision of this Agreement shall be binding except as set forth in writing signed by its duly authorized representative.  \nAll disputes between you and IDB arising out of or relating to this Agreement shall be finally resolved by arbitration conducted in the English language in Washington, District of Columbia, United States of America, under the commercial arbitration rules of the American Arbitration Association, provided that IDB reserves the right to apply for temporary, preliminary and final injunctive relief to enforce any of the provisions of this Agreement relating to the use of its trademarks, copyrights, other intellectual property and data security. The parties shall be responsible for their respective filing and attorneys’ fees (except that the prevailing party shall be entitled to an award of reasonable attorneys’ fees incurred in connection with the arbitration in such an amount as may be determined by the arbitrator). All decisions of the arbitrator shall be final and binding on both parties and enforceable in any court of competent jurisdiction. The parties otherwise agree to the exclusive jurisdiction of the courts of Washington, District of Columbia, United States of America for the resolution of any disputes not subject to arbitration and for the enforcement of any award resulting from any arbitration between the parties, provided that IDB reserves the right to obtain judicial equitable relief in any court having personal jurisdiction over you.  \n\nALL CLAIMS MUST BE BROUGHT IN EACH PARTY’S INDIVIDUAL CAPACITY, AND NOT AS A PLAINTIFF OR CLASS MEMBER IN ANY PURPORTED CLASS OR REPRESENTATIVE PROCEEDING, AND, UNLESS YOU AND IDB AGREE OTHERWISE, THE ARBITRATOR MAY NOT CONSOLIDATE MORE THAN ONE PERSON'S CLAIMS. YOU AGREE THAT, BY ENTERING INTO THIS AGREEMENT, YOU AND IDB ARE EACH WAIVING THE RIGHT TO PARTICIPATE IN A CLASS ACTION. NOTHING IN THIS CLAUSE OR THIS AGREEMENT SHALL OPERATE AS A WAIVER OF, OR OTHERWISE BE CONSTRUED TO RESTRICT, LIMIT OR DEFEAT ANY RIGHTS, PRIVILEGES OR IMMUNITIES GRANTED TO THE IDB UNDER THE AGREEMENT ESTABLISHING THE INTER-AMERICAN DEVELOPMENT BANK OR ANY TREATY OR PROVISION OF DOMESTIC OR INTERNATIONAL LAW.\n\n<h2 class=\"clause\">Assignment</h2>\nThis Agreement, and any rights and licenses granted hereunder, may not be transferred or assigned by you but may be assigned by IDB without restriction.\n\n<h2 class=\"clause\">General</h2>\nThis Agreement is the entire agreement between you and IDB relating to your use of the LACCHAIN TEST NETWORK and the Services, and supersedes any prior agreements or understandings between you and IDB with respect to the subject matter of this Agreement. You agree that no joint venture, partnership, employment, or agency relationship exists between you and IDB as a result of this Agreement or your use of the LACCHAIN TEST NETWORKS. IDB's performance of this Agreement is subject to existing laws and legal process, and nothing contained in this Agreement is in derogation of IDB's right to comply with governmental, court and law enforcement requests or requirements relating to your use of the LACCHAIN TEST NETWORK or the Services or information provided to or gathered by IDB with respect to such use. If any part of this Agreement including, but not limited to, the warranty disclaimers and liability limitations set forth above, is determined to be invalid or unenforceable pursuant to applicable law, then the invalid or unenforceable provision will be deemed superseded by a valid, enforceable provision that most closely matches the intent of the original provision, and the remainder of this Agreement shall continue in effect. If you need to send IDB a notice under this Agreement, or otherwise need to contact IDB with respect to the LACCHAIN TEST NETWORKS or the Services, please send your notice to marcosal@iadb.org and alejandropa@iadb.org.\n\n<h2 class=\"clause\">Modification Of This Terms Of Use</h2>\nIDB reserves the right to modify this Agreement and to change the terms, conditions, and notices under which the LACCHAIN TEST NETWORK and the Services are offered. Such modification shall be effective when it is posted on https://github.com/lacchain/pantheon-network/blob/master/TERMS_AND_COND_VAL_NODE.md. Your continued use of the LACCHAIN TEST NETWORK or the Services after a revised Agreement is posted signifies your acceptance of the revised Agreement. You should therefore review this Agreement regularly and when we notify you of any changes thereto to ensure you are updated as to such changes.\n\n----\n\n<h2 class=\"clause\">Annex A</h2>\nUSERS MUST UTILIZE THE LACCHAIN INFRASTRUCTURE WITH RESPONSIBILITY. USERS AGREE NOT TO MISUSE LACCHAIN INFRASTRUCTURE OR HELP ANYONE ELSE TO DO SO. USERS MUST NOT EVEN TRY TO DO ANY OF THE FOLLOWING IN CONNECTION WITH THE LACCHAIN INFRASTRUCTURE SERVICES AND PRODUCTS:  \n\n* PROBE, SCAN, OR TEST THE VULNERABILITY OF ANY SYSTEM OR NETWORK UNLESS DONE IN AGREEMENT WITH IDB; \n* ENGAGE IN CYPTOCURRENY TRANSACTIONS, CRYPTO INVESTMENTS OR GAMBLING, UNLESS DONE IN AGREEEMNT WITH IDB;     \n* BREACH OT OTHERWISE CIRCUMVENT ANY SECURITY OR AUTHENTICATION MEASURES; \n* ACCESS, TAMPER WITH, OR USE NON-PUBLIC AREAS OR PARTS OF THE SERVICES, OR SHARED AREAS OF THE SERVICES THE USER HAVE NOT BEEN ALLOWED TO; \n* ACCESS, SEARCH, OR CREAT ACCOUNTS IN THE LACCHAIN INFRASTRUCTURE SERVICES AND PRODUCS BY ANY MEANS OTHER THAN OUR PUBLICLY SUPPORTED INTERFACES (I.E. SCRAPING OR CREATING ACCOUNTS I BULK) UNLESS DONE IN AGREEMENT WITH IDB; \n* SEND NSOLICITED COMMUNICATIONS, PROMOTIONS, ADVERTISEMENT, OR SPAM; \n* SEND ALTERED, DECEPTIVE OR FALSE SOURCE-IDENTIFYING INFORMATION, INCLUDING SPOOFING OR PHISHING; \n* PROMOTE OR ADVERTISE PRODUCTS OR SERVICES OTHER THAN THE USER OWNS WITHOUT APPROPIATE AUTHORIZATION; \n* SELL OR RESELL LACCHAIN INFRASTRUCTURE SERVICES AND PRODUCTS UNLESS SPECIFICALLY AUTHORIZED TO DO SO; \n* USE THE LACCHAIN INFRASTRUCTURE SERVICES AND PRODUCS TO PROMOTE, SUPPORT, DEVELOP, OR CONTRIBUTE TO ANY ACTIVITIES THAT ARE UNLAWFULLY PORNOGRAPHIC OR INDECENT, OR RELATED WITH ACTS OF VIOLENCE OR TERRORISM, INCLUDING TERROR PROPAGANDA; \n* ADVOCATE BIGOTRY OR HATRED AGAINST ANY PERSON OR GROUP OF PEOPLE BASED ON THEIR RACE, RELIGION, ETHNICITY, SEX, GENDER IDENTITY, SEXUAL ORIENTATION, DISABILITY, OR IMPAIRMENT; \n* HARASS OR ABUSE OTHER ENTITIES OPERATING LACCHAIN INFRASTRUCTURE; \n* VIOLATE THE LAW IN ANY WAY, INCLUDING ACTIVITIES THAT ARE FRAUDULENT, DIFAMATORY, OR MISLEADING; \n* VIOLATE THE PRIVACY OR INFRINGE THE RIGHTS OF OTHERS.  \n\n----\n\n<h2 class=\"clause\">Annex B</h2>\nTHIS PRIVACY POLICY SETS FORTH THE DATA PROTECTION POLICIES AND PRACTICES OF THE LACCHAIN TEST NETWORK, A BLOCKCHAIN NETWORK ESTABLISHED AND SUPPORTED BY THE INTER-AMERICAN DEVELOPMENT BANK (\"IDB\" OR \"US\"). AS EXPLAINED IN THE LACCHAIN TERMS AND CONDITIONS FOR TEST NETWORKS FOR VALIDATOR NODES, INTO WHICH THIS PRIVACY POLICY IS INCORPORATED BY REFERENCE, THE IDB IS AN INTERNATIONAL ORGANIZATION ESTABLISHED BY ITS MEMBER COUNTRIES PURSUANT TO THE AGREEMENT ESTABLISHING THE INTER-AMERICAN DEVELOPMENT BANK. \nBY USING THE LACCHAIN TEST NETWORK, YOU ARE AGREEING TO THE TERMS OF THIS PRIVACY POLICY, INCLUDING AS THEY MAY BE AMENDED FROM TIME TO TIME. YOUR USE OF THE SITE THEREFORE CONSTITUTES YOUR CONSENT TO OUR COLLECTION, USE AND DISCLOSURE OF PERSONAL INFORMATION WE COLLECT FROM YOU THROUGH THE LACCHAIN TEST NETWORK OR ANY OF THE SERVICES, AS DESCRIBED HEREIN. PLEASE BE SURE TO READ THIS ENTIRE PRIVACY POLICY BEFORE USING THE LACCHAIN TEST NETWORK OR ANY OF THE SERVICES. \nAS THE LACCHAIN TEST NETWORK IS UPDATED AND EXPANDED, OUR PRIVACY POLICY MAY CHANGE, SO PLEASE REVIEW THE POSTED PRIVACY POLICY FROM TIME TO TIME. WE WILL NOTIFY YOU ABOUT MATERIAL CHANGES IN THIS PRIVACY POLICY VIA EMAIL TO THE POINT OF CONTACT.\n\n<h3 class=\"clause\">Scope And Definitions</h3>\nBELOW WE DESCRIBE OUR POLICIES AND PRACTICES WITH RESPECT TO INFORMATION CONCERNING USERS OF THE LACCHAIN TEST NETWORKS, INCLUDING HOW WE COLLECT, USE, SHARE AND STORE THAT INFORMATION.  \nAS USED IN THIS POLICY, THE FOLLOWING TERMS HAVE A SPECIFIC MEANING:  \nPERSONALLY IDENTIFIABLE INFORMATION OR PII IS INFORMATION THAT IS ABOUT OR PERTAINS TO A SPECIFIC INDIVIDUAL AND CAN BE LINKED TO (IDENTIFIED WITH THAT INDIVIDUAL). \nANONYMOUS INFORMATION IS AGGREGATED INFORMATION, DEMOGRAPHIC INFORMATION AND ANY OTHER INFORMATION THAT DOES NOT REVEAL THE SPECIFIC IDENTITY OF AN INDIVIDUAL. \nAN IP ADDRESS IS THE INTERNET PROTOCOL ADDRESS OF THE COMPUTER AN INDIVIDUAL USES TO ACCESS THE SITE (AND THE INTERNET MORE GENERALLY).\n\n<h3 class=\"clause\">Collection Of Information Through The Lacchain Test Network</h3>\n-INFORMATION YOU SUBMIT\nIF YOU REGISTER FOR THE LACCHAIN TEST NETWORK, WE WILL COLLECT CERTAIN PII FROM YOU, INCLUDING YOUR FULL NAME, POSTAL ADDRESS, E-MAIL ADDRESS AND PHONE NUMBER, INFORMATION. \nWHEN YOU USE THE LACCHAIN TEST NETWORK, YOUR MAKE YOUR ACTIVITY TRACEABLE AND PUBLIC TO ANYONE.\n-INFORMATION AUTOMATICALLY COLLECTED \nYOUR USE OF THE LACCHAIN TEST NETWORK MIGHT BE MONITORIZED AND ANALYZED USING DIFFERENT TOOLS. \nWHEN YOU USE THE LACCHAIN TEST NETWORK, CERTAIN ANONYMOUS INFORMATION AS IPS MIGHT BE AUTOMATICALLY COLLECTED. \nALL OF THESE IS DESIGNED TO IMPROVE THE LACCHAIN TEST NETWORK. BY USING THE LACCHAIN TEST NETWORK, YOU CONSENT TO THE USE OF TRACKING TECHNOLOGIES AS DESCRIBED ABOVE.  \n\nSHARING OF INFORMATION COLLECTED THROUGH THE LACCHAIN TEST NETWORK \nFOR PURPOSES OF CREATING ECOSYSTEM, EXPOSING AND EXPLORING USE CASES, RAISING AWARENESS, PROMOTING THE TECHNOLOGY, SHARING LESSONS LEARNED, AND BY MEANS OF TRANSPARENCY, THE INFORMATION YOU SUBMIT AND THE INFORMATION THAT IS AUTOMATICALLY COLLECTED ABOUT YOU MIGHT BE SHARED PUBLICLY BY THE IDB WITH NO PRIOR NOTIFICATION.\n\n<h3 class=\"clause\">Country</h3>\nWE MAY DISCLOSE PII IN RESPONSE TO LEGAL PROCESS OR WHEN WE BELIEVE IN GOOD FAITH THAT THE LAW REQUIRES IT, FOR EXAMPLE, IN RESPONSE TO A COURT ORDER, SUBPOENA, OR A LAW ENFORCEMENT AGENCY’S REQUEST. WE ALSO MAY DISCLOSE PII TO PROTECT THE SECURITY AND OPERATION OF THE SITE OR THE RIGHTS OF OTHER SITE USERS, AND TO PROTECT OURSELVES AND OUR PARTNERS, AFFILIATES, CONSULTANTS, SUPPLIERS, AND PROVIDERS AGAINST LIABILITY, OR IF WE HAVE REASON TO BELIEVE THAT SOMEONE IS CAUSING OR THREATENING TO CAUSE INJURY TO OR INTERFERENCE WITH THE IDB’S RIGHTS OR PROPERTY, AS WELL AS TO PROTECT AGAINST FRAUD.\n\n<h3 class=\"clause\">Deletion Personal Information</h3>\nYOU UNDERSTAND THAT A THE LACCHAIN TEST NETWORK, AS A BLOCKCHAIN NETWORK, IS AN IMMUTABLE AND DECENTRALIZED REGISTER OF INFORMATION. ANY INFORMATION ON THE ACTIVITY OF YOUR VALIDATOR NODE MIGHT STAY IN THE BLOCKCHAIN UNTIL THE LAST NODE IS TURNED OFF. THE IDB WILL NOT BE RESPONSIBLE FOR THE ERASE OF ANY ACTIVITY OF YOUR NODE IN THE LACCHAIN TEST NETWORK.\n\n<h3 class=\"clause\">Data Security</h3>\nWE ENDEAVOR TO PROTECT AND TO MONITOR THE SECURITY AND INTEGRITY OF PII WE COLLECT BY IMPLEMENTING PHYSICAL, ELECTRONIC AND MANAGERIAL PROCEDURES TO SAFEGUARD AND SECURE THE INFORMATION FROM LOSS, MISUSE, UNAUTHORIZED ACCESS OR DISCLOSURE, ALTERATION OR DESTRUCTION. HOWEVER, DUE TO THE INHERENT NATURE OF THE INTERNET AS AN OPEN GLOBAL COMMUNICATIONS VEHICLE, WE CANNOT GUARANTEE THAT ANY INFORMATION, WHETHER DURING TRANSMISSION THROUGH THE INTERNET, WHILE STORED ON OUR DATA SYSTEMS OR OTHERWISE IN MAINTAINED BY US, WILL BE ABSOLUTELY SAFE FROM INTRUSION BY OTHERS, SUCH AS HACKERS. YOU SHOULD BE AWARE THAT YOUR TRANSMISSION MIGHT NOT BE SECURE WHILE IT IS IN TRANSIT, AND THAT A THIRD PARTY COULD POSSIBLY VIEW THE INFORMATION IN TRANSIT. IN THE OCCURRENCE OF A SECURITY BREACH OF OUR DATA SYSTEMS THAT COULD COMPROMISE OUR USERS’ PII, WE WILL DISCLOSE THIS INTRUSION TO OUR AFFECTED USERS.\n\n<h3 class=\"clause\">Data Retention</h3>\nWE RETAIN PII AND ANONYMOUS INFORMATION COLLECTED THROUGH THE SITE FOR OPERATIONAL, RECORDKEEPING AND LEGAL PURPOSES. WE WILL RETAIN PII ABOUT YOU FOR THE PERIOD NECESSARY TO FULFILL THE PURPOSES OUTLINED IN THIS POLICY OR OUR DATA RETENTION POLICIES, UNLESS A LONGER RETENTION PERIOD IS REQUIRED BY LAW.\n\n<h3 class=\"clause\">International Data Transfers</h3>\nWHEN YOU SUBMIT INFORMATION TO US THROUGH EMAIL, THE LACCHAIN TEST NETWORK OR OTHERWISE, THAT INFORMATION (INCLUDING ANY PII) WILL BE PROCESSED IN THE UNITED STATES. THE DATA PROTECTION AND OTHER PRIVACY LAWS OF THE UNITED STATES MAY NOT AFFORD THE SAME LEVEL OF PROTECTION AS THE LAWS OF CERTAIN OTHER COUNTRIES. BY PROVIDING PERSONAL INFORMATION TO IDB FROM OUTSIDE THE UNITED STATES, WHETHER DIRECTLY OR INDIRECTLY THROUGH THE LACCHAIN TEST NETWORK OR OTHERWISE, YOU EXPRESSLY CONSENT TO THE TRANSFER OF YOUR INFORMATION TO THE UNITED STATES, IN ACCORDANCE WITH THE MEASURES OF PROTECTION DESCRIBED IN THIS PRIVACY POLICY."
+        }
+    ],
+    "variants": [
+        {
+            "name": "variant_block_signing_authority_v0",
+            "types": ["block_signing_authority_v0"]
+        }
+    ]
+}
