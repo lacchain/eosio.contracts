@@ -193,207 +193,207 @@ Modify, and create if necessary, the {{permission}} permission of {{account}} to
 ---
 spec_version: "0.2.0"
 title: On Error Action
-summary: 'This action is delivered to the sender of a deferred transaction'
+summary: 'This action is delivered to the {{nowrap sender}} of a deferred transaction'
 icon: @ICON_BASE_URL@/@ADMIN_ICON_URI@
 ---
 
-On error action, notification of this action is delivered to the sender of a deferred transaction
-when an objective error occurs while executing the deferred transaction.
+On error action, notification of this action is delivered to the {{sender}} of a deferred transaction {{sent_trx}} when an objective error occurs while executing the deferred transaction.
 
 <h1 class="contract">addentity</h1>
 
 ---
 spec_version: "0.2.0"
 title: Add Entity
-summary: 'Add to the network a Partner and Non Partner entity'
+summary: 'Register a partner or non-partner {{nowrap entity_name}} entity on the network'
 icon: @ICON_BASE_URL@/@ADMIN_ICON_URI@
 ---
 
-Allows the user to Add to the network a Partner and Non Partner entity.
+Allows the user to register a partner or non-partner {{nowrap entity_name}} entity on the network specifying its {{entity_type}} type and {{pubkey}} public key.
 
 <h1 class="contract">rmentity</h1>
 
 ---
 spec_version: "0.2.0"
 title: Remove Entity
-summary: 'Remove from the network a Partner and Non Partner entity'
+summary: 'Remove a partner or non-partner {{nowrap entity_name}} entity from the network'
 icon: @ICON_BASE_URL@/@ADMIN_ICON_URI@
 ---
 
-Allows the user to remove from the network a Partner and Non Partner entity.
+Allows the user to remove a partner or non-partner {{entity_name}} entity from the network.
 
 <h1 class="contract">addvalidator</h1>
 
 ---
 spec_version: "0.2.0"
-title: Add Validator
-summary: 'Add to the network a Validator for the entity'
+title: Register Validator
+summary: 'Register a {{nowrap name}} validator node on the network'
 icon: @ICON_BASE_URL@/@ADMIN_ICON_URI@
 ---
 
-Allows the user to Add to the network a Validator for the entity.
+Allows a {{entity}} partner entity to register a new {{name}} validator node on the network with its respective {{validator_authority}} authority.
 
 <h1 class="contract">addwriter</h1>
 
 ---
 spec_version: "0.2.0"
 title: Add Writer
-summary: 'Add to the network a Writer node for a Partner entity'
+summary: 'Register a {{nowrap name}} writer node on the network'
 icon: @ICON_BASE_URL@/@ADMIN_ICON_URI@
 ---
 
-Allows the user to Add to the network a Writer node for a Partner entity.
+Allows a {{entity}} partner or non-partner entity to register a new {{name}} writer node on the network with its {writer_authority}} authority.
 
 <h1 class="contract">addboot</h1>
 
 ---
 spec_version: "0.2.0"
 title: Add Boot Node
-summary: 'Add a Boot Node to the network'
+summary: 'Register a {{nowrap name}} boot node on the network'
 icon: @ICON_BASE_URL@/@ADMIN_ICON_URI@
 ---
 
-Allows the user to add a Boot Node to the network.
+Allows a {{entity}} partner entity to register a new {{name}} boot node on the network.
 
 <h1 class="contract">addobserver</h1>
 
 ---
 spec_version: "0.2.0"
 title: Add Observer Node
-summary: 'Add a Observer Node to the network'
+summary: 'Register an {{nowrap observer}} observer node on the network'
 icon: @ICON_BASE_URL@/@ADMIN_ICON_URI@
 ---
 
-Allows the user to add a Observer Node to the network.
+Allows a {{name}} partner or non-partner entity to register a new {{observer}} observer node on the network.
 
 <h1 class="contract">netaddgroup</h1>
 
 ---
 spec_version: "0.2.0"
-title: Create a Group of Nodes
-summary: 'Create a Group of Nodes to the network'
+title: Create Group of Nodes
+summary: 'Create a {{nowrap name}} group to organize {{nowrap nodes}} nodes on the network'
 icon: @ICON_BASE_URL@/@ADMIN_ICON_URI@
 ---
 
-Allows the user to add a Group of Nodes to the network.
+Allows the {{name}} permissioning committee to create a group for {{nodes}} nodes on the network.
 
 <h1 class="contract">rmnode</h1>
 
 ---
 spec_version: "0.2.0"
 title: Remove a Node
-summary: 'Remove a Node from the network'
+summary: 'Remove a {{nowrap node_name}} Node from the network'
 icon: @ICON_BASE_URL@/@ADMIN_ICON_URI@
 ---
 
-Allows the user to remove a Node from the network.
+Allows an entity to remove a {{node_name}} Node from the network.
 
 <h1 class="contract">netrmgroup</h1>
 
 ---
 spec_version: "0.2.0"
 title: Remove a Group of Nodes
-summary: 'Remove a Group of Nodes from the network'
+summary: 'Remove a {{nowrap name}} Group of Nodes from the network'
 icon: @ICON_BASE_URL@/@ADMIN_ICON_URI@
 ---
 
-Allows the user to remove a Group of Nodes from the network.
+Allows the permissioning committee to remove a {{name}} Group of Nodes from the network.
 
 <h1 class="contract">netsetgroup</h1>
 
 ---
 spec_version: "0.2.0"
 title: Link a Node
-summary: 'Link a Node with a list of Groups to the network'
+summary: 'Link a {{nowrap node}} Node with a List of Groups of the network'
 icon: @ICON_BASE_URL@/@ADMIN_ICON_URI@
 ---
 
-Allows the user to link a Node with a list of Groups to the network.
+Allows the entity nodes to link a {{node}} Node with a {{groups}} List of Groups of the network.
 
 <h1 class="contract">setnodeinfo</h1>
 
 ---
 spec_version: "0.2.0"
 title: Set Node Information
-summary: 'Set information to a Node'
+summary: 'Set information to a {{nowrap node}} Node'
 icon: @ICON_BASE_URL@/@ADMIN_ICON_URI@
 ---
 
-Allows the user to set information to a specific node.
+Allows the entity to set {{info}} information to a specific {{node}} node.
 
 <h1 class="contract">setnodexinfo</h1>
 
 ---
 spec_version: "0.2.0"
 title: Set Node Extended Information
-summary: 'Set extendend information to a Node'
+summary: 'Set extended information to a {{nowrap node}} Node'
 icon: @ICON_BASE_URL@/@ADMIN_ICON_URI@
 ---
 
-Allows the user to set extendend information to a specific node.
+Allows the permissioning committee to set {{ext_info}} extended information to a specific {{node}} node.
 
 <h1 class="contract">setentinfo</h1>
 
 ---
 spec_version: "0.2.0"
-title: Set Entity Information
-summary: 'Set information to an Entity'
+title: Set Information About an Entity
+summary: 'Set information to an {{nowrap entity}} Entity'
 icon: @ICON_BASE_URL@/@ADMIN_ICON_URI@
 ---
 
-Allows the user to set information to an entity.
+Allows an {{entity}} entity to set {{info}} information about a specific node on the network.
 
 <h1 class="contract">setentxinfo</h1>
 
 ---
 spec_version: "0.2.0"
 title: Set Extended Entity Information
-summary: 'Set extended information to an Entity'
+summary: 'Set extended information to an {{nowrap entity}} Entity'
 icon: @ICON_BASE_URL@/@ADMIN_ICON_URI@
 ---
 
-Allows the user to set extendend information to an entity.
+Allows an {{entity}} entity to set {{ext_info}} extended information such as entity name, location, and contact information.
+
 
 <h1 class="contract">setschedule</h1>
 
 ---
 spec_version: "0.2.0"
 title: Set Schedule Action
-summary: 'Set schedule action, sets a new list of active Validators'
+summary: 'Set schedule action, sets a new list of active {{nowrap validators}} Validators'
 icon: @ICON_BASE_URL@/@ADMIN_ICON_URI@
 ---
 
-Set schedule action, sets a new list of active validators, by proposing a schedule change, once the block that contains the proposal becomes irreversible, the schedule is promoted to "pending" automatically. Once the block that promotes the schedule is irreversible, the schedule will become "active".
+Set schedule action, sets a new list of active {{validators}} validators, by proposing a schedule change, once the block that contains the proposal becomes irreversible, the schedule is promoted to "pending" automatically. Once the block that promotes the schedule is irreversible, the schedule will become "active".
 
 <h1 class="contract">setram</h1>
 
 ---
 spec_version: "0.2.0"
-title: Set Ram Resource
-summary: 'Set ram resource to an account'
+title: Set RAM Resource
+summary: 'Set RAM resource to an {{nowrap account}} account from an entity'
 icon: @ICON_BASE_URL@/@ADMIN_ICON_URI@
 ---
 
-Allows the user to set ram resource to an account.
+Allows the user to set {{ram_bytes}} RAM resource to an {{account}} account from an {{entity}} entity.
 
 <h1 class="contract">onblock</h1>
 
 ---
 spec_version: "0.2.0"
 title: Effect Trigger
-summary: 'It is used for network monitoring and as an effect trigger'
+summary: 'It is used for network monitoring and as an effect trigger for each {{nowrap bh}} block'
 icon: @ICON_BASE_URL@/@ADMIN_ICON_URI@
 ---
 
-It is executed with each block and passes some data that can be used for network monitoring and as an effect trigger.
+It is executed with each {{bh}} block and passes some data that can be used for network monitoring and as an effect trigger.
 
 <h1 class="contract">reindex</h1>
 
 ---
 spec_version: "0.2.0"
 title: Dummy Action
-summary: 'I'm a dummy action!'
+summary: 'Dummy action'
 icon: @ICON_BASE_URL@/@ADMIN_ICON_URI@
 ---
 
-I'm a dummy action!.
+Dummy action for testing and development purposes.
