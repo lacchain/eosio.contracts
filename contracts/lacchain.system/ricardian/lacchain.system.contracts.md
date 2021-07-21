@@ -335,8 +335,8 @@ Allows the permissioning committee to set {{ext_info}} extended information to a
 
 ---
 spec_version: "0.2.0"
-title: Set Information About an Entity
-summary: 'Set information to an {{nowrap entity}} Entity'
+title: Set Entity Information
+summary: 'Set information about an {{nowrap entity}} Entity'
 icon: @ICON_BASE_URL@/@ADMIN_ICON_URI@
 ---
 
