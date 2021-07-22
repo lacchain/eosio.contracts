@@ -208,7 +208,7 @@ summary: 'Register a partner or non-partner {{nowrap entity_name}} entity on the
 icon: @ICON_BASE_URL@/@ADMIN_ICON_URI@
 ---
 
-Allows the user to register a partner or non-partner {{nowrap entity_name}} entity on the network specifying its {{entity_type}} type and {{pubkey}} public key.
+Allows the user to register a partner or non-partner {{entity_name}} entity on the network specifying its {{entity_type}} type and {{pubkey}} public key.
 
 <h1 class="contract">rmentity</h1>
 
@@ -318,7 +318,7 @@ summary: 'Set information to a {{nowrap node}} Node'
 icon: @ICON_BASE_URL@/@ADMIN_ICON_URI@
 ---
 
-Allows the entity to set {{info}} information to a specific {{node}} node.
+Allows the permissioning committee to set {{info}} information to a specific {{node}} node.
 
 <h1 class="contract">setnodexinfo</h1>
 
@@ -374,7 +374,7 @@ summary: 'Set RAM resource to an {{nowrap account}} account from an entity'
 icon: @ICON_BASE_URL@/@ADMIN_ICON_URI@
 ---
 
-Allows the user to set {{ram_bytes}} RAM resource to an {{account}} account from an {{entity}} entity.
+Allows an {{entity}} entity to set {{ram_bytes}} RAM resource to an {{account}} account.
 
 <h1 class="contract">onblock</h1>
 
