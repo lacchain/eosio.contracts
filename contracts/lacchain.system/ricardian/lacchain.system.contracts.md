@@ -285,7 +285,7 @@ summary: 'Remove a {{nowrap node_name}} Node from the network'
 icon: @ICON_BASE_URL@/@ADMIN_ICON_URI@
 ---
 
-Allows an entity to remove a {{node_name}} Node from the network.
+Allows an entity to remove a {{node_name}} node from the network.
 
 <h1 class="contract">netrmgroup</h1>
 
@@ -296,18 +296,18 @@ summary: 'Remove a {{nowrap name}} Group of Nodes from the network'
 icon: @ICON_BASE_URL@/@ADMIN_ICON_URI@
 ---
 
-Allows the permissioning committee to remove a {{name}} Group of Nodes from the network.
+Allows the permissioning committee to remove a {{name}} group of nodes from the network.
 
 <h1 class="contract">netsetgroup</h1>
 
 ---
 spec_version: "0.2.0"
 title: Link a Node
-summary: 'Link a {{nowrap node}} Node with a List of Groups of the network'
+summary: 'Link a {{nowrap node}} node with a list of groups of the network'
 icon: @ICON_BASE_URL@/@ADMIN_ICON_URI@
 ---
 
-Allows the entity nodes to link a {{node}} Node with a {{groups}} List of Groups of the network.
+Allows the entity nodes to link a {{node}} node with a {{groups}} list of groups of the network.
 
 <h1 class="contract">setnodeinfo</h1>
 
